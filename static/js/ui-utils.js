@@ -1,5 +1,5 @@
 /**
- * R5 Operational Intelligence Platform - Shared Enterprise UI Utilities
+ * Swift Service - Shared Enterprise UI Utilities
  * Reusable components for empty states, skeleton loaders, error states, and XSS sanitization.
  */
 

@@ -49,12 +49,12 @@ export const ROLE_PRESETS = [
     role: 'CUSTOMER',
     email: 'customer@retailwave.com',
     title: 'Sarah Jenkins (Customer)',
-    desc: 'RetailWave portal, complaint filing & tracking'
+    desc: 'Swift Service customer portal, complaint filing & tracking'
   }
 ];
 
 export const NAV_SECTIONS = [
-  { id: 'core', label: 'Operational Flow (Core R5)' },
+  { id: 'core', label: 'Core Operational Intelligence' },
   { id: 'intervention', label: 'Intervention & Verification' },
   { id: 'platform', label: 'Enterprise Platform' }
 ];

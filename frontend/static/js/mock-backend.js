@@ -1,5 +1,5 @@
 /**
- * R5 Operational Intelligence Platform - Client-Side Mock Backend Engine
+ * Swift Service - Client-Side Autonomous Engine
  * Provides 100% autonomous in-browser execution when running on static hosting (e.g., Netlify).
  * Ensures zero 404s and full closed-loop feature demonstration.
  */

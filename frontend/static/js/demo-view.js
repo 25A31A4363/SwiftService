@@ -24,7 +24,7 @@ export async function renderDemoView(container) {
           </span>
         </div>
         <p style="color: var(--text-secondary); margin: 0.35rem 0 0 0; font-size: 0.88rem; max-width: 820px;">
-          Experience the closed-loop R5 platform on a realistic retail refrigeration failure at Store 104 (Seattle Downtown Concourse).
+          Experience the closed-loop Swift Service platform on a realistic retail refrigeration failure at Store 104 (Seattle Downtown Concourse).
           Witness autonomous triage, active slip hazard escalation, dispatch within 30m SLA, post-repair telemetry verification, and outcome measurement.
         </p>
       </div>
@@ -207,7 +207,7 @@ function renderDemoResults(container, data) {
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
           <div style="font-weight: 700; color: #fff; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
-            <span>🎯</span> Core R5 Closed-Loop Journey Complete
+            <span>🎯</span> Core Swift Service Closed-Loop Journey Complete
           </div>
           <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; max-width: 620px;">
             The retail refrigeration failure has traversed all 15 stages. Directly inspect the persisted ground-truth operational artifacts across the platform:

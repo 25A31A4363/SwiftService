@@ -1,5 +1,5 @@
 /**
- * R5 Operational Intelligence Platform - Main Application Controller
+ * Swift Service - Main Application Controller
  */
 
 import { state } from './state.js';
@@ -17,6 +17,7 @@ import { renderOutcomesView } from './outcomes-view.js';
 import { renderBriefsView } from './briefs-view.js';
 import { renderDemoView } from './demo-view.js';
 import { renderCustomerPortal, renderCustomerComplaintsView } from './customer-portal.js';
+import { renderAuthPage } from './auth-page.js';
 
 // DOM Elements
 const elApp = document.getElementById('app');
@@ -95,17 +96,20 @@ async function loadInitialData() {
 }
 
 function render() {
-  // If in CUSTOMER mode or user is a registered customer, render the RetailWave Customer Portal
+  // If unauthenticated, render the dedicated Swift Service Authentication Page
+  if (!state.token || !state.user) {
+    closeModal();
+    renderAuthPage(elApp);
+    return;
+  }
+
+  // If in CUSTOMER mode or user is a registered customer, render the Swift Service Customer Experience Portal
   if (state.currentPortalMode === 'CUSTOMER' || (state.user && state.user.role === 'CUSTOMER')) {
     closeModal();
     renderCustomerPortal(elApp);
     return;
   }
 
-  if (!state.token || !state.user) {
-    renderLoginModal();
-    return;
-  }
   closeModal();
 
   elApp.innerHTML = `
@@ -115,10 +119,10 @@ function render() {
     <!-- Sidebar Navigation -->
     <aside class="app-sidebar" id="app-sidebar" role="navigation" aria-label="Operations Navigation">
       <div class="sidebar-header">
-        <div class="brand-badge">R5</div>
+        <div class="brand-badge">⚡</div>
         <div class="brand-title-group">
-          <h1>R5 Intelligence</h1>
-          <div class="brand-subtitle">Retail Ops Platform</div>
+          <h1>Swift Service</h1>
+          <div class="brand-subtitle">Retail Ops Intelligence</div>
         </div>
       </div>
 
@@ -2022,10 +2026,10 @@ function renderLoginModal() {
   openModal(`
     <div class="modal-header">
       <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <div class="brand-badge" style="width: 32px; height: 32px; font-size: 1rem;">R5</div>
+        <div class="brand-badge" style="width: 32px; height: 32px; font-size: 1rem;">⚡</div>
         <div>
-          <h2 style="font-size: 1.15rem; font-weight: 700; color: #fff;">Sign In — R5 Intelligence</h2>
-          <div style="font-size: 0.78rem; color: var(--text-muted);">Retail Operations Intelligence & Incident Management Platform</div>
+          <h2 style="font-size: 1.15rem; font-weight: 700; color: #fff;">Sign In — Swift Service</h2>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">AI-Powered Retail Feedback Intelligence & Incident Platform</div>
         </div>
       </div>
     </div>

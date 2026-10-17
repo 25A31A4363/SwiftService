@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log('[R5 Build] Preparing static assets for production deployment...');
+console.log('[Swift Service Build] Preparing static assets for production deployment...');
 
 const frontendDir = path.join(__dirname, 'frontend');
 const rootIndex = path.join(__dirname, 'index.html');
@@ -17,12 +17,12 @@ const rootRedirects = path.join(__dirname, '_redirects');
 const redirectsContent = '/*    /index.html   200\n';
 fs.writeFileSync(frontendRedirects, redirectsContent, 'utf-8');
 fs.writeFileSync(rootRedirects, redirectsContent, 'utf-8');
-console.log('[R5 Build] ✓ Created frontend/_redirects and root _redirects');
+console.log('[Swift Service Build] ✓ Created frontend/_redirects and root _redirects');
 
 // 2. Sync index.html to root as dual-deployment fallback
 if (fs.existsSync(frontendIndex)) {
   fs.copyFileSync(frontendIndex, rootIndex);
-  console.log('[R5 Build] ✓ Synced frontend/index.html to root index.html');
+  console.log('[Swift Service Build] ✓ Synced frontend/index.html to root index.html');
 }
 
 // 3. Mirror static/ to root static/ for zero-config fallback
@@ -47,7 +47,7 @@ function copyDirRecursive(src, dest) {
 
 if (fs.existsSync(frontendStatic)) {
   copyDirRecursive(frontendStatic, rootStatic);
-  console.log('[R5 Build] ✓ Mirrored static assets to root static/ directory');
+  console.log('[Swift Service Build] ✓ Mirrored static assets to root static/ directory');
 }
 
-console.log('[R5 Build] Deployment preparation complete.');
+console.log('[Swift Service Build] Deployment preparation complete.');

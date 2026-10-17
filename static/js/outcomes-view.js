@@ -61,7 +61,7 @@ function renderDashboardContent(container, data) {
           <span class="badge-r5 badge-purple">Phase 12: Closed-Loop Measurement</span>
         </div>
         <p style="color: var(--text-secondary); margin: 0.35rem 0 0 0; font-size: 0.9rem; max-width: 760px;">
-          R5 Core Objective: Measure whether corrective action actually changed the operational problem by deterministically comparing 
+          Swift Service Core Objective: Measure whether corrective action actually changed the operational problem by deterministically comparing 
           <strong>BEFORE intervention</strong> vs <strong>AFTER intervention</strong>.
         </p>
       </div>

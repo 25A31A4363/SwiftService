@@ -1,5 +1,5 @@
 /**
- * R5 Operational Intelligence Platform - Global State Store
+ * Swift Service - Global State Store
  */
 
 export const state = {

@@ -66,7 +66,7 @@ export async function apiRequest(endpoint, options = {}) {
     const contentType = response.headers.get('content-type') || '';
     if (!contentType.includes('application/json')) {
       // Returned HTML or static fallback rewrite
-      console.warn(`[R5 Platform] API endpoint ${endpoint} returned non-JSON. Falling back to autonomous client engine.`);
+      console.warn(`[Swift Service] API endpoint ${endpoint} returned non-JSON. Falling back to autonomous client engine.`);
       forceMockBackend = true;
       return await mockBackend.handleRequest(endpoint, options);
     }
@@ -75,7 +75,7 @@ export async function apiRequest(endpoint, options = {}) {
 
     if (!response.ok || !json.success) {
       if (response.status === 404) {
-        console.warn(`[R5 Platform] Endpoint ${endpoint} returned 404. Falling back to autonomous client engine.`);
+        console.warn(`[Swift Service] Endpoint ${endpoint} returned 404. Falling back to autonomous client engine.`);
         return await mockBackend.handleRequest(endpoint, options);
       }
 
@@ -93,7 +93,7 @@ export async function apiRequest(endpoint, options = {}) {
   } catch (err) {
     // If network failure or backend not responding, fallback to mock backend
     if (err.name === 'TypeError' || err.message?.includes('Failed to fetch') || err.message?.includes('NetworkError') || err.message?.includes('JSON')) {
-      console.warn(`[R5 Platform] Live backend unreachable for ${endpoint}. Falling back to autonomous client engine.`);
+      console.warn(`[Swift Service] Live backend unreachable for ${endpoint}. Falling back to autonomous client engine.`);
       forceMockBackend = true;
       return await mockBackend.handleRequest(endpoint, options);
     }

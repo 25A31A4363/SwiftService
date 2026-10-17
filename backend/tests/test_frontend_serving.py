@@ -10,7 +10,7 @@ class TestFrontendServing(unittest.TestCase):
     def test_root_serves_html(self):
         resp = self.client.get("/")
         self.assertEqual(resp.status_code, 200)
-        self.assertIn("R5 — AI-Powered Operational Intelligence Platform", resp.text)
+        self.assertIn("Swift Service", resp.text)
         self.assertIn("id=\"app\"", resp.text)
 
     def test_static_css_served(self):
@@ -22,7 +22,7 @@ class TestFrontendServing(unittest.TestCase):
     def test_static_js_served(self):
         resp = self.client.get("/static/js/app.js")
         self.assertEqual(resp.status_code, 200)
-        self.assertIn("R5 Operational Intelligence Platform", resp.text)
+        self.assertIn("Swift Service", resp.text)
 
         resp2 = self.client.get("/static/js/hierarchy-views.js")
         self.assertEqual(resp2.status_code, 200)
