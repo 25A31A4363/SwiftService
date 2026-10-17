@@ -1,0 +1,118 @@
+{
+  "_metadata": {
+    "datasetName": "Synthetic Semantic Clustering Benchmark",
+    "datasetType": "SYNTHETIC_EVALUATION_DATA",
+    "synthetic": true,
+    "dimension": "SEMANTIC_CLUSTERING_QUALITY",
+    "version": "1.0.0",
+    "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+    "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+  },
+  "cases": [
+    {
+      "id": "item-c1-01",
+      "groundTruthCluster": "CLUSTER_DAIRY_REFRIGERATION",
+      "storeId": "store-104",
+      "departmentId": "dept-104-dairy",
+      "rawText": "Milk cooler in Aisle 4 is warm to the touch and milk feels lukewarm."
+    },
+    {
+      "id": "item-c1-02",
+      "groundTruthCluster": "CLUSTER_DAIRY_REFRIGERATION",
+      "storeId": "store-104",
+      "departmentId": "dept-104-dairy",
+      "rawText": "Puddle of milky water under Dairy Cooler 104-B, temperature gauge reading 55F."
+    },
+    {
+      "id": "item-c1-03",
+      "groundTruthCluster": "CLUSTER_DAIRY_REFRIGERATION",
+      "storeId": "store-104",
+      "departmentId": "dept-104-dairy",
+      "rawText": "Refrigeration compressor behind dairy cases in Aisle 4 buzzing loudly and blowing warm air."
+    },
+    {
+      "id": "item-c1-04",
+      "groundTruthCluster": "CLUSTER_DAIRY_REFRIGERATION",
+      "storeId": "store-104",
+      "departmentId": "dept-104-dairy",
+      "rawText": "Yogurt containers in dairy section are sweating and soft, unit clearly failing."
+    },
+    {
+      "id": "item-c1-05",
+      "groundTruthCluster": "CLUSTER_DAIRY_REFRIGERATION",
+      "storeId": "store-104",
+      "departmentId": "dept-104-dairy",
+      "rawText": "Dairy Aisle 4 temperature alarm light is flashing red on the refrigeration rack."
+    },
+    {
+      "id": "item-c2-01",
+      "groundTruthCluster": "CLUSTER_CHECKOUT_SCANNER",
+      "storeId": "store-104",
+      "departmentId": "dept-104-pos",
+      "rawText": "Self-checkout terminal 3 barcode scanner laser is completely dead, will not read UPC codes."
+    },
+    {
+      "id": "item-c2-02",
+      "groundTruthCluster": "CLUSTER_CHECKOUT_SCANNER",
+      "storeId": "store-104",
+      "departmentId": "dept-104-pos",
+      "rawText": "Register 3 in self-pay lane is frozen on scan item screen and emitting rapid error beeps."
+    },
+    {
+      "id": "item-c2-03",
+      "groundTruthCluster": "CLUSTER_CHECKOUT_SCANNER",
+      "storeId": "store-104",
+      "departmentId": "dept-104-pos",
+      "rawText": "Handheld scanner cord on self-checkout station 3 is frayed and disconnected."
+    },
+    {
+      "id": "item-c2-04",
+      "groundTruthCluster": "CLUSTER_CHECKOUT_SCANNER",
+      "storeId": "store-104",
+      "departmentId": "dept-104-pos",
+      "rawText": "Customer trying to ring up groceries at self-checkout lane 3, scanner glass is cracked and unreadable."
+    },
+    {
+      "id": "item-c2-05",
+      "groundTruthCluster": "CLUSTER_CHECKOUT_SCANNER",
+      "storeId": "store-104",
+      "departmentId": "dept-104-pos",
+      "rawText": "Self-checkout station 3 keeps rebooting every two minutes when an item is scanned."
+    },
+    {
+      "id": "item-c3-01",
+      "groundTruthCluster": "CLUSTER_RESTROOM_HYGIENE",
+      "storeId": "store-104",
+      "departmentId": "dept-104-restroom",
+      "rawText": "Customer restroom by front entrance is out of paper towels and toilet paper."
+    },
+    {
+      "id": "item-c3-02",
+      "groundTruthCluster": "CLUSTER_RESTROOM_HYGIENE",
+      "storeId": "store-104",
+      "departmentId": "dept-104-restroom",
+      "rawText": "Soap dispensers in the front lobby restroom are completely empty and bone dry."
+    },
+    {
+      "id": "item-c3-03",
+      "groundTruthCluster": "CLUSTER_RESTROOM_HYGIENE",
+      "storeId": "store-104",
+      "departmentId": "dept-104-restroom",
+      "rawText": "Restroom sink #2 faucet handle is loose and spraying water onto the floor."
+    },
+    {
+      "id": "item-c3-04",
+      "groundTruthCluster": "CLUSTER_RESTROOM_HYGIENE",
+      "storeId": "store-104",
+      "departmentId": "dept-104-restroom",
+      "rawText": "Trash cans in front entrance restrooms are overflowing with paper napkins onto floor."
+    },
+    {
+      "id": "item-c3-05",
+      "groundTruthCluster": "CLUSTER_RESTROOM_HYGIENE",
+      "storeId": "store-104",
+      "departmentId": "dept-104-restroom",
+      "rawText": "The public bathroom near the entrance needs urgent janitorial service, foul odor."
+    }
+  ]
+}

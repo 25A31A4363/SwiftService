@@ -1,0 +1,207 @@
+{
+  "run_id": "eval-run-a4754c5bd382",
+  "timestamp": "2026-10-17T06:48:42.267187+00:00",
+  "framework_version": "1.0.0",
+  "environment_info": {
+    "python_version": "3.14.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "system": "Windows",
+    "database": "SQLite (WAL Mode)",
+    "evaluator_count": 12
+  },
+  "total_dimensions": 2,
+  "passed_dimensions": 2,
+  "overall_score": 100.0,
+  "summary_status": "PASS",
+  "dimension_results": [
+    {
+      "dimension": "FALSE_ALERT_RATE",
+      "dimension_name": "False-Alert Rate",
+      "score": 100.0,
+      "passed": true,
+      "metrics": [
+        {
+          "name": "false_alert_rate",
+          "label": "False Alert Rate (FPR)",
+          "nature": "QUANTITATIVE",
+          "value": 0.0,
+          "unit": "ratio",
+          "threshold": 0.05,
+          "passed": true,
+          "description": "Fraction of steady-state or random Poisson variance windows incorrectly triggering alerts",
+          "qualitative_notes": null
+        },
+        {
+          "name": "specificity",
+          "label": "Negative Window Specificity",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 0.95,
+          "passed": true,
+          "description": "True Negative Rate across non-spike operational baseline intervals",
+          "qualitative_notes": null
+        }
+      ],
+      "total_cases": 5,
+      "evaluated_cases": 5,
+      "summary": "Evaluated 5 negative control windows: False Alert Rate=0.0000, Specificity=1.0000.",
+      "caveats": [
+        "Evaluated on synthetic steady-state and Poisson noise baseline series.",
+        "In field production, cross-store correlation can alter false discovery expectations."
+      ],
+      "qualitative_notes": null
+    },
+    {
+      "dimension": "SYSTEM_RELIABILITY",
+      "dimension_name": "System Reliability & Fault Tolerance",
+      "score": 100.0,
+      "passed": true,
+      "metrics": [
+        {
+          "name": "degraded_fallback_success_rate",
+          "label": "Degraded Fallback Success Rate",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 1.0,
+          "passed": true,
+          "description": "Guarantees system remains functional when AI providers fail without corrupting operational data",
+          "qualitative_notes": null
+        },
+        {
+          "name": "idempotent_replay_fidelity",
+          "label": "Idempotency Cache Replay Fidelity",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 1.0,
+          "passed": true,
+          "description": "Verifies identical mutation requests return cached responses without duplicating database writes",
+          "qualitative_notes": null
+        },
+        {
+          "name": "background_job_retry_fidelity",
+          "label": "Background Job Retry & Dead-Letter Fidelity",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 1.0,
+          "passed": true,
+          "description": "Verifies exponential backoff on transient failures and clean dead-letter transitions upon max retries",
+          "qualitative_notes": null
+        }
+      ],
+      "total_cases": 5,
+      "evaluated_cases": 5,
+      "summary": "Evaluated system reliability: Degradation Fallback=1.00, Idempotency Replay=1.00, Job Retry=1.00.",
+      "caveats": [
+        "Evaluated using injected runtime faults, network timeout simulations, and duplicate request replays.",
+        "Real hardware failures (disk exhaustion, power loss) depend on underlying infrastructure redundancy."
+      ],
+      "qualitative_notes": null
+    }
+  ],
+  "dataset_manifest": [
+    {
+      "dataset_id": "synthetic_clustering",
+      "dimension": "SEMANTIC_CLUSTERING_QUALITY",
+      "filename": "synthetic_clustering.json",
+      "sample_count": 15,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_emerging_detection",
+      "dimension": "EMERGING_ISSUE_DETECTION",
+      "filename": "synthetic_emerging_detection.json",
+      "sample_count": 8,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_evidence_grounding",
+      "dimension": "EVIDENCE_GROUNDING",
+      "filename": "synthetic_evidence_grounding.json",
+      "sample_count": 2,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_feedback_extraction",
+      "dimension": "FEEDBACK_EXTRACTION_QUALITY",
+      "filename": "synthetic_feedback_extraction.json",
+      "sample_count": 20,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_hallucination_adversarial",
+      "dimension": "AI_HALLUCINATION_RESISTANCE",
+      "filename": "synthetic_hallucination_adversarial.json",
+      "sample_count": 6,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_investigation_followup",
+      "dimension": "FOLLOWUP_QUESTION_RELEVANCE",
+      "filename": "synthetic_investigation_followup.json",
+      "sample_count": 12,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_multilingual",
+      "dimension": "MULTILINGUAL_BEHAVIOR",
+      "filename": "synthetic_multilingual.json",
+      "sample_count": 8,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_outcome_measurement",
+      "dimension": "OUTCOME_MEASUREMENT_CORRECTNESS",
+      "filename": "synthetic_outcome_measurement.json",
+      "sample_count": 4,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_prioritization",
+      "dimension": "PRIORITY_CONSISTENCY",
+      "filename": "synthetic_prioritization.json",
+      "sample_count": 8,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_reliability",
+      "dimension": "SYSTEM_RELIABILITY",
+      "filename": "synthetic_reliability.json",
+      "sample_count": 5,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_routing",
+      "dimension": "ROUTING_ACCURACY",
+      "filename": "synthetic_routing.json",
+      "sample_count": 10,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    }
+  ],
+  "disclaimer": "CRITICAL DISCLAIMER: This report is generated strictly from controlled synthetic benchmark datasets. All reported metrics represent internal algorithmic verification and regression boundary checks. These results do NOT claim production accuracy, field-measured performance, or commercial readiness. Where objective ground truth is unavailable, metrics are explicitly labeled as qualitative or not yet measurable."
+}

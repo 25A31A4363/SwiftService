@@ -1,0 +1,79 @@
+{
+  "_metadata": {
+    "datasetName": "Synthetic Evidence Grounding Benchmark",
+    "datasetType": "SYNTHETIC_EVALUATION_DATA",
+    "synthetic": true,
+    "dimension": "EVIDENCE_GROUNDING",
+    "version": "1.0.0",
+    "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+    "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+  },
+  "cases": [
+    {
+      "id": "gnd-001",
+      "issueTitle": "Dairy Cooler Temperature Rise & Milk Spoilage",
+      "sourceFeedback": [
+        {
+          "feedbackId": "fb-g1-01",
+          "rawText": "Milk in cooler 4 feels warm and temperature gauge reads 52F at 2pm.",
+          "author": "customer"
+        },
+        {
+          "feedbackId": "fb-g1-02",
+          "rawText": "Audible compressor humming and warm exhaust air detected behind cooler 4.",
+          "author": "associate"
+        }
+      ],
+      "claims": [
+        {
+          "claimId": "clm-001",
+          "statement": "Cooler 4 experienced a temperature rise reaching 52 degrees Fahrenheit.",
+          "citedFeedbackIds": ["fb-g1-01"],
+          "expectedValid": true,
+          "verbatimQuote": "temperature gauge reads 52F"
+        },
+        {
+          "claimId": "clm-002",
+          "statement": "Abnormal compressor noise and warm exhaust were observed behind the unit.",
+          "citedFeedbackIds": ["fb-g1-02"],
+          "expectedValid": true,
+          "verbatimQuote": "compressor humming and warm exhaust air"
+        },
+        {
+          "claimId": "clm-003",
+          "statement": "An estimated $10,000 worth of ice cream was destroyed in aisle 12.",
+          "citedFeedbackIds": [],
+          "expectedValid": false,
+          "verbatimQuote": null
+        }
+      ]
+    },
+    {
+      "id": "gnd-002",
+      "issueTitle": "Self-Checkout Scanner Failure During Peak Hours",
+      "sourceFeedback": [
+        {
+          "feedbackId": "fb-g2-01",
+          "rawText": "Scanner laser on Register 3 is unlit and failed to scan cereal box.",
+          "author": "associate"
+        }
+      ],
+      "claims": [
+        {
+          "claimId": "clm-004",
+          "statement": "Register 3 barcode scanner laser is non-functional.",
+          "citedFeedbackIds": ["fb-g2-01"],
+          "expectedValid": true,
+          "verbatimQuote": "Scanner laser on Register 3 is unlit"
+        },
+        {
+          "claimId": "clm-005",
+          "statement": "Twenty customers abandoned full shopping carts in protest.",
+          "citedFeedbackIds": ["fb-invalid-999"],
+          "expectedValid": false,
+          "verbatimQuote": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "_metadata": {
+    "datasetName": "Synthetic Investigation Follow-Up Relevance Benchmark",
+    "datasetType": "SYNTHETIC_EVALUATION_DATA",
+    "synthetic": true,
+    "dimension": "FOLLOWUP_QUESTION_RELEVANCE",
+    "version": "1.0.0",
+    "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+    "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+  },
+  "cases": [
+    {
+      "id": "fol-001",
+      "rawText": "Cooler is leaking water onto the floor.",
+      "requiresFollowup": true,
+      "expectedMissingFields": ["location"],
+      "expectedIssueType": "REFRIGERATION_HVAC",
+      "relevanceRationale": "Missing specific aisle/zone needed for technician dispatch."
+    },
+    {
+      "id": "fol-002",
+      "rawText": "Spill on the floor near the drinks.",
+      "requiresFollowup": true,
+      "expectedMissingFields": ["location", "affectedEntity"],
+      "expectedIssueType": "SAFETY_HAZARD",
+      "relevanceRationale": "Missing exact aisle and specific equipment/asset for PPE/cleanup."
+    },
+    {
+      "id": "fol-003",
+      "rawText": "Self-checkout is not taking payment cards.",
+      "requiresFollowup": true,
+      "expectedMissingFields": ["location"],
+      "expectedIssueType": "POS_EQUIPMENT",
+      "relevanceRationale": "Missing specific lane number among bank of self-checkout units."
+    },
+    {
+      "id": "fol-004",
+      "rawText": "Dairy Section cooler in Aisle 4 has temperature reading 54F, water pooling around base, compressor making loud noise.",
+      "requiresFollowup": false,
+      "expectedMissingFields": [],
+      "expectedIssueType": "REFRIGERATION_HVAC",
+      "relevanceRationale": "Complete actionable report with unit ID, aisle, reading, and symptom."
+    },
+    {
+      "id": "fol-005",
+      "rawText": "Broken glass olive oil bottle shattered in Aisle 3, customer slip hazard marked with temporary basket.",
+      "requiresFollowup": false,
+      "expectedMissingFields": [],
+      "expectedIssueType": "SAFETY_HAZARD",
+      "relevanceRationale": "Complete actionable report with hazard, precise aisle location, and interim state."
+    },
+    {
+      "id": "fol-006",
+      "rawText": "POS terminal at Lane 3 card reader frozen on 'Please wait' screen, rebooted once by supervisor with no effect.",
+      "requiresFollowup": false,
+      "expectedMissingFields": [],
+      "expectedIssueType": "POS_EQUIPMENT",
+      "relevanceRationale": "Complete actionable report with lane number, error message, and troubleshooting state."
+    },
+    {
+      "id": "fol-007",
+      "rawText": "Someone dropped something messy somewhere.",
+      "requiresFollowup": true,
+      "expectedMissingFields": ["location", "affectedEntity", "severity", "operationalImpact"],
+      "expectedIssueType": "GENERAL",
+      "relevanceRationale": "Extremely vague report requiring full clarification."
+    },
+    {
+      "id": "fol-008",
+      "rawText": "Meat display case temperature is running warm.",
+      "requiresFollowup": true,
+      "expectedMissingFields": ["location", "affectedEntity"],
+      "expectedIssueType": "REFRIGERATION_HVAC",
+      "relevanceRationale": "Missing specific display case section and department zone."
+    },
+    {
+      "id": "fol-009",
+      "rawText": "Produce Department mister cooler in Aisle 1 dripping steadily onto concrete walkway.",
+      "requiresFollowup": false,
+      "expectedMissingFields": [],
+      "expectedIssueType": "SAFETY_HAZARD",
+      "relevanceRationale": "Sufficient detail to dispatch maintenance technician."
+    },
+    {
+      "id": "fol-010",
+      "rawText": "The price tag for soda was wrong at register.",
+      "requiresFollowup": true,
+      "expectedMissingFields": ["location", "affectedEntity"],
+      "expectedIssueType": "PRICING",
+      "relevanceRationale": "Missing specific register number and affected merchandise."
+    },
+    {
+      "id": "fol-011",
+      "rawText": "Water leaking from ceiling tile.",
+      "requiresFollowup": true,
+      "expectedMissingFields": ["location", "affectedEntity"],
+      "expectedIssueType": "SAFETY_HAZARD",
+      "relevanceRationale": "Missing aisle/department location."
+    },
+    {
+      "id": "fol-012",
+      "rawText": "POS terminal at Lane 6 scanner has receipt printer paper jam mechanism stripped gear.",
+      "requiresFollowup": false,
+      "expectedMissingFields": [],
+      "expectedIssueType": "POS_EQUIPMENT",
+      "relevanceRationale": "Specific lane and mechanical terminal component identified."
+    }
+  ]
+}

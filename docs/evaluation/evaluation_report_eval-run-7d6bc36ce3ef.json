@@ -1,0 +1,606 @@
+{
+  "run_id": "eval-run-7d6bc36ce3ef",
+  "timestamp": "2026-10-17T06:25:51.335278+00:00",
+  "framework_version": "1.0.0",
+  "environment_info": {
+    "python_version": "3.14.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "system": "Windows",
+    "database": "SQLite (WAL Mode)",
+    "evaluator_count": 12
+  },
+  "total_dimensions": 12,
+  "passed_dimensions": 3,
+  "overall_score": 65.07,
+  "summary_status": "DEGRADED",
+  "dimension_results": [
+    {
+      "dimension": "FEEDBACK_EXTRACTION_QUALITY",
+      "dimension_name": "Feedback Extraction Quality",
+      "score": 34.53,
+      "passed": false,
+      "metrics": [
+        {
+          "name": "category_f1",
+          "label": "Issue Category Macro F1",
+          "nature": "QUANTITATIVE",
+          "value": 0.3145,
+          "unit": "ratio",
+          "threshold": 0.75,
+          "passed": false,
+          "description": "Macro F1-score across operational issue categories on synthetic benchmark",
+          "qualitative_notes": null
+        },
+        {
+          "name": "category_accuracy",
+          "label": "Issue Category Accuracy",
+          "nature": "QUANTITATIVE",
+          "value": 0.4,
+          "unit": "ratio",
+          "threshold": 0.75,
+          "passed": false,
+          "description": "Proportion of synthetic feedback entries correctly classified into operational category",
+          "qualitative_notes": null
+        },
+        {
+          "name": "urgency_accuracy",
+          "label": "Operational Urgency Accuracy",
+          "nature": "QUANTITATIVE",
+          "value": 0.3,
+          "unit": "ratio",
+          "threshold": 0.7,
+          "passed": false,
+          "description": "Accuracy of extracted urgency tier (Immediate, Within Hour, Next Day, Routine)",
+          "qualitative_notes": null
+        },
+        {
+          "name": "entity_overlap_f1",
+          "label": "Entity Extraction Overlap F1",
+          "nature": "QUANTITATIVE",
+          "value": 0.31,
+          "unit": "ratio",
+          "threshold": 0.6,
+          "passed": false,
+          "description": "Mean token overlap F1 score between extracted entities and ground truth entity labels",
+          "qualitative_notes": null
+        },
+        {
+          "name": "ambiguity_detection_accuracy",
+          "label": "Ambiguity Identification Accuracy",
+          "nature": "QUANTITATIVE",
+          "value": 0.55,
+          "unit": "ratio",
+          "threshold": 0.8,
+          "passed": false,
+          "description": "Accuracy of flagging vague/ambiguous observations requiring operator follow-up",
+          "qualitative_notes": null
+        }
+      ],
+      "total_cases": 20,
+      "evaluated_cases": 20,
+      "summary": "Evaluated 20 synthetic cases: Category F1=0.31, Urgency Acc=0.30, Entity F1=0.31, Ambiguity Acc=0.55.",
+      "caveats": [
+        "Evaluation evaluated strictly against controlled synthetic benchmark cases.",
+        "Metrics measure deterministic pattern-grounded rule extraction; does not represent commercial model benchmark claims.",
+        "Real-world field observations may contain greater orthographic noise and novel multi-department phrasing."
+      ],
+      "qualitative_notes": null
+    },
+    {
+      "dimension": "FOLLOWUP_QUESTION_RELEVANCE",
+      "dimension_name": "Follow-Up Question Relevance",
+      "score": 63.31,
+      "passed": false,
+      "metrics": [
+        {
+          "name": "followup_decision_accuracy",
+          "label": "Follow-Up Necessity Decision Accuracy",
+          "nature": "QUANTITATIVE",
+          "value": 0.6667,
+          "unit": "ratio",
+          "threshold": 0.75,
+          "passed": false,
+          "description": "Accuracy of deciding whether to trigger follow-up questions vs deeming feedback sufficient",
+          "qualitative_notes": null
+        },
+        {
+          "name": "question_relevance_rate",
+          "label": "Question Targeted Relevance Rate",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 0.8,
+          "passed": true,
+          "description": "Proportion of generated follow-up questions addressing genuinely missing operational fields",
+          "qualitative_notes": null
+        },
+        {
+          "name": "missing_field_detection_f1",
+          "label": "Missing Field Identification F1",
+          "nature": "QUANTITATIVE",
+          "value": 0.0655,
+          "unit": "ratio",
+          "threshold": 0.6,
+          "passed": false,
+          "description": "Overlap F1 score between detected missing operational fields and ground truth gaps",
+          "qualitative_notes": null
+        }
+      ],
+      "total_cases": 12,
+      "evaluated_cases": 12,
+      "summary": "Evaluated 12 cases: Follow-up decision acc=0.67, Question relevance=1.00, Missing field F1=0.07.",
+      "caveats": [
+        "Evaluated on synthetic cases with controlled informational gaps.",
+        "Real operator responses may introduce partial or multi-part clarifications."
+      ],
+      "qualitative_notes": null
+    },
+    {
+      "dimension": "SEMANTIC_CLUSTERING_QUALITY",
+      "dimension_name": "Semantic Clustering Quality",
+      "score": 91.03,
+      "passed": true,
+      "metrics": [
+        {
+          "name": "cluster_purity",
+          "label": "Cluster Purity",
+          "nature": "QUANTITATIVE",
+          "value": 0.9333,
+          "unit": "ratio",
+          "threshold": 0.8,
+          "passed": true,
+          "description": "Fraction of dominant true operational topics correctly aligned in predicted clusters",
+          "qualitative_notes": null
+        },
+        {
+          "name": "pairwise_rand_index",
+          "label": "Pairwise Rand Index",
+          "nature": "QUANTITATIVE",
+          "value": 0.8762,
+          "unit": "ratio",
+          "threshold": 0.8,
+          "passed": true,
+          "description": "Pairwise clustering agreement between ground truth groupings and algorithmic clusters",
+          "qualitative_notes": null
+        },
+        {
+          "name": "cross_cluster_leakage_rate",
+          "label": "Cross-Cluster Leakage Rate",
+          "nature": "QUANTITATIVE",
+          "value": 0.04,
+          "unit": "ratio",
+          "threshold": 0.15,
+          "passed": true,
+          "description": "Proportion of unrelated operational issues mistakenly clustered together",
+          "qualitative_notes": null
+        }
+      ],
+      "total_cases": 15,
+      "evaluated_cases": 15,
+      "summary": "Evaluated 15 items across 4 clusters: Purity=0.93, Rand Index=0.88, Leakage Rate=0.04.",
+      "caveats": [
+        "Evaluated on synthetic distinct-department problem scenarios.",
+        "Real retail clusters can have multi-problem overlaps (e.g., refrigeration failure causing slip hazard)."
+      ],
+      "qualitative_notes": null
+    },
+    {
+      "dimension": "EMERGING_ISSUE_DETECTION",
+      "dimension_name": "Emerging Issue Detection",
+      "score": 80.0,
+      "passed": false,
+      "metrics": [
+        {
+          "name": "emerging_spike_sensitivity",
+          "label": "Emerging Spike Sensitivity (TPR)",
+          "nature": "QUANTITATIVE",
+          "value": 0.6667,
+          "unit": "ratio",
+          "threshold": 0.85,
+          "passed": false,
+          "description": "True Positive Rate of detecting sudden volume/velocity acceleration vs historical baselines",
+          "qualitative_notes": null
+        },
+        {
+          "name": "insufficient_baseline_guard_rate",
+          "label": "Insufficient Baseline Guard Rate",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 1.0,
+          "passed": true,
+          "description": "Rate at which sparse historical windows correctly refuse to fire premature alerts",
+          "qualitative_notes": null
+        }
+      ],
+      "total_cases": 8,
+      "evaluated_cases": 8,
+      "summary": "Evaluated 8 time-series velocity windows: Spike Sensitivity=0.67, Insufficient Guard=1.00.",
+      "caveats": [
+        "Evaluated using synthetic Poisson time-series arrival sequences.",
+        "Real retail volumes may exhibit diurnal cycles and promotional volatility."
+      ],
+      "qualitative_notes": null
+    },
+    {
+      "dimension": "FALSE_ALERT_RATE",
+      "dimension_name": "False-Alert Rate",
+      "score": 100.0,
+      "passed": true,
+      "metrics": [
+        {
+          "name": "false_alert_rate",
+          "label": "False Alert Rate (FPR)",
+          "nature": "QUANTITATIVE",
+          "value": 0.0,
+          "unit": "ratio",
+          "threshold": 0.05,
+          "passed": true,
+          "description": "Fraction of steady-state or random Poisson variance windows incorrectly triggering alerts",
+          "qualitative_notes": null
+        },
+        {
+          "name": "specificity",
+          "label": "Negative Window Specificity",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 0.95,
+          "passed": true,
+          "description": "True Negative Rate across non-spike operational baseline intervals",
+          "qualitative_notes": null
+        }
+      ],
+      "total_cases": 5,
+      "evaluated_cases": 5,
+      "summary": "Evaluated 5 negative control windows: False Alert Rate=0.0000, Specificity=1.0000.",
+      "caveats": [
+        "Evaluated on synthetic steady-state and Poisson noise baseline series.",
+        "In field production, cross-store correlation can alter false discovery expectations."
+      ],
+      "qualitative_notes": null
+    },
+    {
+      "dimension": "PRIORITY_CONSISTENCY",
+      "dimension_name": "Priority Consistency & Monotonicity",
+      "score": 0.0,
+      "passed": false,
+      "metrics": [],
+      "total_cases": 0,
+      "evaluated_cases": 0,
+      "summary": "Evaluation failed due to exception: 'score'",
+      "caveats": [
+        "Evaluation crashed during execution"
+      ],
+      "qualitative_notes": null
+    },
+    {
+      "dimension": "ROUTING_ACCURACY",
+      "dimension_name": "Routing & Dispatch Accuracy",
+      "score": 88.0,
+      "passed": false,
+      "metrics": [
+        {
+          "name": "domain_mapping_accuracy",
+          "label": "Operational Domain Mapping Accuracy",
+          "nature": "QUANTITATIVE",
+          "value": 0.8,
+          "unit": "ratio",
+          "threshold": 0.85,
+          "passed": false,
+          "description": "Accuracy of categorizing operational issues into core maintenance domains",
+          "qualitative_notes": null
+        },
+        {
+          "name": "sla_assignment_accuracy",
+          "label": "SLA Assignment & Safety Acceleration Accuracy",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 0.85,
+          "passed": true,
+          "description": "Accuracy of SLA deadline calculation with safety hazard emergency overrides",
+          "qualitative_notes": null
+        }
+      ],
+      "total_cases": 10,
+      "evaluated_cases": 10,
+      "summary": "Evaluated 10 routing cases: Domain Acc=0.80, SLA Acc=1.00.",
+      "caveats": [
+        "Evaluated using synthetic retail store issue profiles and SLA constraints.",
+        "In enterprise stores, departmental shift staffing can dynamically influence dispatch routes."
+      ],
+      "qualitative_notes": null
+    },
+    {
+      "dimension": "EVIDENCE_GROUNDING",
+      "dimension_name": "Evidence Grounding & Lineage",
+      "score": 84.0,
+      "passed": false,
+      "metrics": [
+        {
+          "name": "citation_validity_ratio",
+          "label": "Evidence Citation Validity Ratio",
+          "nature": "QUANTITATIVE",
+          "value": 0.6,
+          "unit": "ratio",
+          "threshold": 0.65,
+          "passed": false,
+          "description": "Fraction of claims successfully linked to verified source feedback items",
+          "qualitative_notes": null
+        },
+        {
+          "name": "verbatim_quote_fidelity",
+          "label": "Verbatim Quote Grounding Fidelity",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 0.9,
+          "passed": true,
+          "description": "Proportion of cited quotes verified as exact substrings of original operational feedback",
+          "qualitative_notes": null
+        },
+        {
+          "name": "grounding_verification_accuracy",
+          "label": "Grounding Verification Accuracy",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 0.85,
+          "passed": true,
+          "description": "Accuracy of distinguishing grounded claims from fabricated/unsupported statements",
+          "qualitative_notes": null
+        }
+      ],
+      "total_cases": 2,
+      "evaluated_cases": 5,
+      "summary": "Evaluated 5 claims across 2 synthetic issues: Citation Ratio=0.60, Verbatim Fidelity=1.00, Verification Acc=1.00.",
+      "caveats": [
+        "Evaluated on synthetic issues with controlled claim-to-feedback lineage.",
+        "In field production, cross-department syntheses may draw upon dozens of simultaneous reports."
+      ],
+      "qualitative_notes": null
+    },
+    {
+      "dimension": "AI_HALLUCINATION_RESISTANCE",
+      "dimension_name": "AI Hallucination Resistance",
+      "score": 65.0,
+      "passed": false,
+      "metrics": [
+        {
+          "name": "unsupported_entity_hallucination_rate",
+          "label": "Unsupported Entity Hallucination Rate",
+          "nature": "QUANTITATIVE",
+          "value": 0.0,
+          "unit": "ratio",
+          "threshold": 0.0,
+          "passed": true,
+          "description": "Rate at which nonexistent operational entities (store IDs, equipment numbers) were fabricated",
+          "qualitative_notes": null
+        },
+        {
+          "name": "prompt_injection_defense_rate",
+          "label": "Adversarial Injection Defense Rate",
+          "nature": "QUANTITATIVE",
+          "value": 0.0,
+          "unit": "ratio",
+          "threshold": 0.95,
+          "passed": false,
+          "description": "Proportion of adversarial jailbreak and prompt injection payloads successfully intercepted",
+          "qualitative_notes": null
+        },
+        {
+          "name": "sparse_input_ambiguity_signaling",
+          "label": "Sparse Input Ambiguity Signaling",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 0.85,
+          "passed": true,
+          "description": "Accuracy of signaling uncertainty rather than guessing facts when given vague feedback",
+          "qualitative_notes": null
+        }
+      ],
+      "total_cases": 6,
+      "evaluated_cases": 6,
+      "summary": "Evaluated 6 cases: Hallucination Rate=0.0000, Injection Defense=0.00, Ambiguity Signaling=1.00.",
+      "caveats": [
+        "Evaluated against controlled synthetic adversarial prompts and sparse input patterns.",
+        "Adversarial landscape evolves continuously; benchmark reflects current taxonomy boundaries."
+      ],
+      "qualitative_notes": null
+    },
+    {
+      "dimension": "OUTCOME_MEASUREMENT_CORRECTNESS",
+      "dimension_name": "Outcome Measurement Correctness",
+      "score": 100.0,
+      "passed": true,
+      "metrics": [
+        {
+          "name": "outcome_state_accuracy",
+          "label": "Outcome State Classification Accuracy",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 0.85,
+          "passed": true,
+          "description": "Accuracy of classifying resolution effectiveness (Improved, Worsened, Inconclusive, No Change)",
+          "qualitative_notes": null
+        },
+        {
+          "name": "recurrence_tracking_accuracy",
+          "label": "Recurrence Accounting Accuracy",
+          "nature": "QUANTITATIVE",
+          "value": 1.0,
+          "unit": "ratio",
+          "threshold": 0.95,
+          "passed": true,
+          "description": "Accuracy of detecting recurring complaints within the post-intervention observation window",
+          "qualitative_notes": null
+        }
+      ],
+      "total_cases": 4,
+      "evaluated_cases": 4,
+      "summary": "Evaluated 4 synthetic outcome streams: Outcome Acc=1.00, Recurrence Acc=1.00.",
+      "caveats": [
+        "Evaluated using synthetic pre/post observation streams.",
+        "In field production, season-adjusted baselines and store footfall fluctuations can affect long-term recurrence rates."
+      ],
+      "qualitative_notes": null
+    },
+    {
+      "dimension": "MULTILINGUAL_BEHAVIOR",
+      "dimension_name": "Multilingual Operational Intelligence",
+      "score": 75.0,
+      "passed": false,
+      "metrics": [
+        {
+          "name": "language_identification_accuracy",
+          "label": "Language Identification Accuracy",
+          "nature": "QUANTITATIVE",
+          "value": 0.875,
+          "unit": "ratio",
+          "threshold": 0.85,
+          "passed": true,
+          "description": "Accuracy of detecting primary language and transliteration across European and Indian languages",
+          "qualitative_notes": null
+        },
+        {
+          "name": "cross_lingual_intent_agreement",
+          "label": "Cross-Lingual Intent Consistency",
+          "nature": "QUANTITATIVE",
+          "value": 0.625,
+          "unit": "ratio",
+          "threshold": 0.85,
+          "passed": false,
+          "description": "Proportion of non-English inputs yielding identical operational category as English reference",
+          "qualitative_notes": null
+        }
+      ],
+      "total_cases": 8,
+      "evaluated_cases": 8,
+      "summary": "Evaluated 8 multilingual observations across 7 language variants: Language Detection Acc=0.88, Intent Agreement=0.62.",
+      "caveats": [
+        "Evaluated on parallel synthetic retail operational sentences across 7 languages/scripts.",
+        "Real retail field data may feature extensive colloquialisms, dialectal spelling, and noisy phonetics."
+      ],
+      "qualitative_notes": null
+    },
+    {
+      "dimension": "SYSTEM_RELIABILITY",
+      "dimension_name": "System Reliability & Fault Tolerance",
+      "score": 0.0,
+      "passed": false,
+      "metrics": [],
+      "total_cases": 0,
+      "evaluated_cases": 0,
+      "summary": "Evaluation failed due to exception: type object 'IdempotencyManager' has no attribute 'save_response'",
+      "caveats": [
+        "Evaluation crashed during execution"
+      ],
+      "qualitative_notes": null
+    }
+  ],
+  "dataset_manifest": [
+    {
+      "dataset_id": "synthetic_clustering",
+      "dimension": "SEMANTIC_CLUSTERING_QUALITY",
+      "filename": "synthetic_clustering.json",
+      "sample_count": 15,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_emerging_detection",
+      "dimension": "EMERGING_ISSUE_DETECTION",
+      "filename": "synthetic_emerging_detection.json",
+      "sample_count": 8,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_evidence_grounding",
+      "dimension": "EVIDENCE_GROUNDING",
+      "filename": "synthetic_evidence_grounding.json",
+      "sample_count": 2,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_feedback_extraction",
+      "dimension": "FEEDBACK_EXTRACTION_QUALITY",
+      "filename": "synthetic_feedback_extraction.json",
+      "sample_count": 20,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_hallucination_adversarial",
+      "dimension": "AI_HALLUCINATION_RESISTANCE",
+      "filename": "synthetic_hallucination_adversarial.json",
+      "sample_count": 6,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_investigation_followup",
+      "dimension": "FOLLOWUP_QUESTION_RELEVANCE",
+      "filename": "synthetic_investigation_followup.json",
+      "sample_count": 12,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_multilingual",
+      "dimension": "MULTILINGUAL_BEHAVIOR",
+      "filename": "synthetic_multilingual.json",
+      "sample_count": 8,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_outcome_measurement",
+      "dimension": "OUTCOME_MEASUREMENT_CORRECTNESS",
+      "filename": "synthetic_outcome_measurement.json",
+      "sample_count": 4,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_prioritization",
+      "dimension": "PRIORITY_CONSISTENCY",
+      "filename": "synthetic_prioritization.json",
+      "sample_count": 8,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_reliability",
+      "dimension": "SYSTEM_RELIABILITY",
+      "filename": "synthetic_reliability.json",
+      "sample_count": 5,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    },
+    {
+      "dataset_id": "synthetic_routing",
+      "dimension": "ROUTING_ACCURACY",
+      "filename": "synthetic_routing.json",
+      "sample_count": 10,
+      "synthetic": true,
+      "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+      "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+    }
+  ],
+  "disclaimer": "CRITICAL DISCLAIMER: This report is generated strictly from controlled synthetic benchmark datasets. All reported metrics represent internal algorithmic verification and regression boundary checks. These results do NOT claim production accuracy, field-measured performance, or commercial readiness. Where objective ground truth is unavailable, metrics are explicitly labeled as qualitative or not yet measurable."
+}

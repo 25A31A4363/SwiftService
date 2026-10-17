@@ -1,0 +1,173 @@
+{
+  "_metadata": {
+    "datasetName": "Synthetic Feedback Extraction Benchmark",
+    "datasetType": "SYNTHETIC_EVALUATION_DATA",
+    "synthetic": true,
+    "dimension": "FEEDBACK_EXTRACTION_QUALITY",
+    "version": "1.0.0",
+    "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+    "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+  },
+  "cases": [
+    {
+      "id": "ext-001",
+      "rawText": "Urgent: Walk-in freezer in Aisle 7 is leaking water and compressor is warm to touch.",
+      "groundTruthCategory": "REFRIGERATION_FAILURE",
+      "groundTruthUrgency": "IMMEDIATE",
+      "groundTruthEntities": ["Aisle 7", "freezer"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-002",
+      "rawText": "Emergency: olive oil spill on wet floor in Aisle 3, massive slip hazard right now.",
+      "groundTruthCategory": "SLIP_FALL_HAZARD",
+      "groundTruthUrgency": "IMMEDIATE",
+      "groundTruthEntities": ["Aisle 3"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-003",
+      "rawText": "Self-checkout in Front Checkout Area has barcode scanner frozen and terminal freeze.",
+      "groundTruthCategory": "EQUIPMENT_MALFUNCTION",
+      "groundTruthUrgency": "WITHIN_HOUR",
+      "groundTruthEntities": ["Front Checkout Area", "Self-checkout"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-004",
+      "rawText": "Unattended counter in Front Checkout Area with long line and no staff for 20 minutes.",
+      "groundTruthCategory": "STAFF_UNAVAILABLE",
+      "groundTruthUrgency": "WITHIN_HOUR",
+      "groundTruthEntities": ["Front Checkout Area"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-005",
+      "rawText": "Customer Restrooms has restroom dirty, toilet paper empty, and soap dispenser empty.",
+      "groundTruthCategory": "FACILITY_CLEANLINESS",
+      "groundTruthUrgency": "SAME_DAY",
+      "groundTruthEntities": ["Customer Restrooms", "soap dispenser"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-006",
+      "rawText": "Dairy Section cooler temperature display reads 52 degrees, milk cartons warm to touch.",
+      "groundTruthCategory": "REFRIGERATION_FAILURE",
+      "groundTruthUrgency": "IMMEDIATE",
+      "groundTruthEntities": ["Dairy Section", "cooler"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-007",
+      "rawText": "Urgent: Puddle of water on the floor in Produce Department, dangerous slip hazard.",
+      "groundTruthCategory": "SLIP_FALL_HAZARD",
+      "groundTruthUrgency": "IMMEDIATE",
+      "groundTruthEntities": ["Produce Department"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-008",
+      "rawText": "POS terminal scanner at Lane 5 is unresponsive and offline with card reader frozen.",
+      "groundTruthCategory": "EQUIPMENT_MALFUNCTION",
+      "groundTruthUrgency": "WITHIN_HOUR",
+      "groundTruthEntities": ["Lane 5", "POS terminal"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-009",
+      "rawText": "Deli Counter has no staff and customer waiting forever, completely unattended.",
+      "groundTruthCategory": "STAFF_UNAVAILABLE",
+      "groundTruthUrgency": "WITHIN_HOUR",
+      "groundTruthEntities": ["Deli Counter"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-010",
+      "rawText": "Trash overflowing and foul odor in Customer Restrooms with dirty floor.",
+      "groundTruthCategory": "FACILITY_CLEANLINESS",
+      "groundTruthUrgency": "SAME_DAY",
+      "groundTruthEntities": ["Customer Restrooms"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-011",
+      "rawText": "Something is smelling weird somewhere in the back area.",
+      "groundTruthCategory": "unknown",
+      "groundTruthUrgency": "unknown",
+      "groundTruthEntities": [],
+      "groundTruthAmbiguity": true
+    },
+    {
+      "id": "ext-012",
+      "rawText": "Organic milk on empty shelf in Aisle 12, completely out of stock and ran out.",
+      "groundTruthCategory": "OUT_OF_STOCK",
+      "groundTruthUrgency": "SAME_DAY",
+      "groundTruthEntities": ["Aisle 12", "organic milk"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-013",
+      "rawText": "Meat Department walk-in cooler leaking water and compressor warm to touch.",
+      "groundTruthCategory": "REFRIGERATION_FAILURE",
+      "groundTruthUrgency": "IMMEDIATE",
+      "groundTruthEntities": ["Meat Department", "cooler"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-014",
+      "rawText": "Wet floor and broken glass spill in Bakery Section right now, immediate slipping danger.",
+      "groundTruthCategory": "SLIP_FALL_HAZARD",
+      "groundTruthUrgency": "IMMEDIATE",
+      "groundTruthEntities": ["Bakery Section"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-015",
+      "rawText": "Produce Department has organic milk and fresh apples completely out of stock.",
+      "groundTruthCategory": "OUT_OF_STOCK",
+      "groundTruthUrgency": "SAME_DAY",
+      "groundTruthEntities": ["Produce Department", "organic milk"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-016",
+      "rawText": "Bakery Section has air conditioning failure and store is hot with ventilation not cooling.",
+      "groundTruthCategory": "HVAC_FAILURE",
+      "groundTruthUrgency": "SAME_DAY",
+      "groundTruthEntities": ["Bakery Section"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-017",
+      "rawText": "Self-checkout register kiosk printer jam and terminal freeze in Front Checkout Area.",
+      "groundTruthCategory": "EQUIPMENT_MALFUNCTION",
+      "groundTruthUrgency": "WITHIN_HOUR",
+      "groundTruthEntities": ["Front Checkout Area", "Self-checkout"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-018",
+      "rawText": "Main entrance has broken glass and puddle creating a slip hazard right now.",
+      "groundTruthCategory": "SLIP_FALL_HAZARD",
+      "groundTruthUrgency": "IMMEDIATE",
+      "groundTruthEntities": ["Main Entrance/Exit"],
+      "groundTruthAmbiguity": false
+    },
+    {
+      "id": "ext-019",
+      "rawText": "It was not very good today, really unimpressed.",
+      "groundTruthCategory": "unknown",
+      "groundTruthUrgency": "unknown",
+      "groundTruthEntities": [],
+      "groundTruthAmbiguity": true
+    },
+    {
+      "id": "ext-020",
+      "rawText": "Frozen Foods Aisle freezer 8 has door seal broken and ice buildup warm to touch.",
+      "groundTruthCategory": "REFRIGERATION_FAILURE",
+      "groundTruthUrgency": "IMMEDIATE",
+      "groundTruthEntities": ["Frozen Foods Aisle", "freezer 8"],
+      "groundTruthAmbiguity": false
+    }
+  ]
+}

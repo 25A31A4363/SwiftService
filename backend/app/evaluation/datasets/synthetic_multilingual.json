@@ -1,0 +1,85 @@
+{
+  "_metadata": {
+    "datasetName": "Synthetic Multilingual Intelligence Benchmark",
+    "datasetType": "SYNTHETIC_EVALUATION_DATA",
+    "synthetic": true,
+    "dimension": "MULTILINGUAL_BEHAVIOR",
+    "version": "1.0.0",
+    "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+    "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+  },
+  "cases": [
+    {
+      "id": "ml-001",
+      "languageCode": "en",
+      "languageName": "English",
+      "rawText": "Milk cooler in Aisle 4 is leaking water, milk cartons warm to touch and compressor stopped.",
+      "groundTruthIntent": "REFRIGERATION_FAILURE",
+      "groundTruthEntities": ["aisle 4", "cooler"],
+      "scriptType": "LATIN"
+    },
+    {
+      "id": "ml-002",
+      "languageCode": "es",
+      "languageName": "Spanish",
+      "rawText": "El refrigerador de leche en el pasillo 4 tiene una fuga de agua, leche tibia y compresor apagado.",
+      "groundTruthIntent": "REFRIGERATION_FAILURE",
+      "groundTruthEntities": ["pasillo 4", "refrigerador"],
+      "scriptType": "LATIN"
+    },
+    {
+      "id": "ml-003",
+      "languageCode": "fr",
+      "languageName": "French",
+      "rawText": "Le refrigerateur a lait de l allee 4 fuit de l eau, le lait est chaud et le compresseur est arrete.",
+      "groundTruthIntent": "REFRIGERATION_FAILURE",
+      "groundTruthEntities": ["allée 4", "réfrigérateur"],
+      "scriptType": "LATIN"
+    },
+    {
+      "id": "ml-004",
+      "languageCode": "de",
+      "languageName": "German",
+      "rawText": "Das Kuehlregal fuer Milch in Gang 4 verliert Wasser, Milch ist warm und der Kompressor ist ausgefallen.",
+      "groundTruthIntent": "REFRIGERATION_FAILURE",
+      "groundTruthEntities": ["gang 4", "kuehlregal"],
+      "scriptType": "LATIN"
+    },
+    {
+      "id": "ml-005",
+      "languageCode": "hi",
+      "languageName": "Hindi (Devanagari)",
+      "rawText": "डेयरी आइसल 4 में दूध का फ्रीजर पानी टपक रहा है, दूध गर्म है और कंप्रेसर बंद हो गया है।",
+      "groundTruthIntent": "REFRIGERATION_FAILURE",
+      "groundTruthEntities": ["आइसल 4", "फ्रीजर"],
+      "scriptType": "DEVANAGARI"
+    },
+    {
+      "id": "ml-006",
+      "languageCode": "hi-Latn",
+      "languageName": "Hinglish (Romanized Hindi)",
+      "rawText": "Aisle 4 mein doodh ka cooler leak ho raha hai, milk warm ho gaya aur compressor stop ho gaya.",
+      "groundTruthIntent": "REFRIGERATION_FAILURE",
+      "groundTruthEntities": ["aisle 4", "cooler"],
+      "scriptType": "LATIN_TRANSLITERATED"
+    },
+    {
+      "id": "ml-007",
+      "languageCode": "ta",
+      "languageName": "Tamil",
+      "rawText": "பால் குளிர்பதன பெட்டி வழி 4 இல் தண்ணீர் கசிவு ஏற்படுகிறது, பால் சூடாக இருக்கிறது.",
+      "groundTruthIntent": "REFRIGERATION_FAILURE",
+      "groundTruthEntities": ["வழி 4"],
+      "scriptType": "TAMIL"
+    },
+    {
+      "id": "ml-008",
+      "languageCode": "ta-Latn",
+      "languageName": "Tanglish (Romanized Tamil)",
+      "rawText": "Aisle 4 la paal fridge le thanni leak aaguthu, milk warm aagiduchu and compressor odala.",
+      "groundTruthIntent": "REFRIGERATION_FAILURE",
+      "groundTruthEntities": ["aisle 4", "fridge"],
+      "scriptType": "LATIN_TRANSLITERATED"
+    }
+  ]
+}

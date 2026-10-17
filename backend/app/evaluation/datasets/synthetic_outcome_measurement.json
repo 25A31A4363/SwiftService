@@ -1,0 +1,65 @@
+{
+  "_metadata": {
+    "datasetName": "Synthetic Outcome Measurement Correctness Benchmark",
+    "datasetType": "SYNTHETIC_EVALUATION_DATA",
+    "synthetic": true,
+    "dimension": "OUTCOME_MEASUREMENT_CORRECTNESS",
+    "version": "1.0.0",
+    "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+    "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+  },
+  "cases": [
+    {
+      "id": "out-001",
+      "name": "Verified Effective Resolution (Zero Recurrence)",
+      "baselineHours": 72,
+      "baselineCount": 6,
+      "postObservationHours": 168,
+      "postCount": 0,
+      "minObservationHours": 48,
+      "expectedOutcome": "IMPROVED",
+      "expectedRecurrenceCount": 0,
+      "isSlaCompliant": true,
+      "rationale": "100% reduction in observations over 7 days post-intervention indicates verified fix."
+    },
+    {
+      "id": "out-002",
+      "name": "Ineffective Remediation (Rapid Recurrence)",
+      "baselineHours": 48,
+      "baselineCount": 4,
+      "postObservationHours": 48,
+      "postCount": 6,
+      "minObservationHours": 24,
+      "expectedOutcome": "WORSENED",
+      "expectedRecurrenceCount": 6,
+      "isSlaCompliant": false,
+      "rationale": "Post-intervention complaints increased; technician intervention failed to resolve root cause."
+    },
+    {
+      "id": "out-003",
+      "name": "Insufficient Observation Period (Inconclusive / Cannot Yet Be Determined)",
+      "baselineHours": 72,
+      "baselineCount": 5,
+      "postObservationHours": 2,
+      "postCount": 0,
+      "minObservationHours": 24,
+      "expectedOutcome": "INCONCLUSIVE",
+      "expectedRecurrenceCount": 0,
+      "isSlaCompliant": true,
+      "rationale": "Only 2 hours elapsed since resolution; must state outcome cannot yet be determined to prevent premature victory."
+    },
+    {
+      "id": "out-004",
+      "name": "No Significant Operational Change",
+      "baselineHours": 72,
+      "baselineCount": 3,
+      "postObservationHours": 72,
+      "postCount": 3,
+      "minObservationHours": 48,
+      "expectedOutcome": "NO_CHANGE",
+      "expectedRecurrenceCount": 3,
+      "isSlaCompliant": true,
+      "rationale": "Post-intervention complaint rate identical to pre-intervention baseline."
+    }
+  ]
+}

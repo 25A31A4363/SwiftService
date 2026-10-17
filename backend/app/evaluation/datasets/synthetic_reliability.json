@@ -1,0 +1,51 @@
+{
+  "_metadata": {
+    "datasetName": "Synthetic System Reliability Benchmark",
+    "datasetType": "SYNTHETIC_EVALUATION_DATA",
+    "synthetic": true,
+    "dimension": "SYSTEM_RELIABILITY",
+    "version": "1.0.0",
+    "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+    "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+  },
+  "cases": [
+    {
+      "id": "rel-001",
+      "testType": "AI_PROVIDER_OUTAGE_DEGRADATION",
+      "description": "Simulates external inference provider connection timeout 504.",
+      "expectedBehavior": "Engage LOCAL_DETERMINISTIC fallback, record degraded AI log, preserve 100% operational text.",
+      "expectedDataCorruptionRate": 0.0,
+      "expectedFallbackSuccess": true
+    },
+    {
+      "id": "rel-002",
+      "testType": "IDEMPOTENT_MUTATION_REPLAY",
+      "description": "Submits repeated POST mutation with identical Idempotency-Key.",
+      "expectedBehavior": "Return cached 201 response with IDEMPOTENT-HIT header; create exactly 1 database record.",
+      "expectedDuplicateRecordsCreated": 0,
+      "expectedStatus": 201
+    },
+    {
+      "id": "rel-003",
+      "testType": "IDEMPOTENCY_PAYLOAD_CONFLICT",
+      "description": "Submits conflicting payload using an already-consumed Idempotency-Key.",
+      "expectedBehavior": "Fast fail with 409 Conflict; reject payload modification.",
+      "expectedStatus": 409
+    },
+    {
+      "id": "rel-004",
+      "testType": "BACKGROUND_JOB_RETRY_BACKOFF",
+      "description": "Enqueues failing task with max_retries=2, backoff=1s.",
+      "expectedBehavior": "Retry 1 schedules future backoff; Retry 2 marks dead-letter FAILED.",
+      "expectedFinalStatus": "FAILED",
+      "expectedAttempts": 2
+    },
+    {
+      "id": "rel-005",
+      "testType": "KUBERNETES_READINESS_LIVENESS_PROBES",
+      "description": "Queries /health/live and /health/ready probes.",
+      "expectedBehavior": "Confirm database connection, WAL journal mode, and active worker responsiveness.",
+      "expectedStatus": 200
+    }
+  ]
+}

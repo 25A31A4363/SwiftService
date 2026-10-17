@@ -1,0 +1,133 @@
+{
+  "_metadata": {
+    "datasetName": "Synthetic Intelligent Routing Benchmark",
+    "datasetType": "SYNTHETIC_EVALUATION_DATA",
+    "synthetic": true,
+    "dimension": "ROUTING_ACCURACY",
+    "version": "1.0.0",
+    "label": "CONTROLLED_SYNTHETIC_EVALUATION_DATA",
+    "disclaimer": "SYNTHETIC EVALUATION DATA ONLY. Used for algorithmic verification under controlled conditions. Does not represent production field telemetry or commercial claims."
+  },
+  "cases": [
+    {
+      "id": "rout-001",
+      "issueTitle": "Walk-in Cooler 104-B Compressor Failure",
+      "category": "REFRIGERATION_FAILURE",
+      "description": "Temperature exceeded 50F in main dairy cooler, compressor stopped.",
+      "priorityTier": "P1_CRITICAL",
+      "severityScore": 0.90,
+      "isSafetyHazard": false,
+      "expectedDomain": "REFRIGERATION_HVAC",
+      "expectedTargetTeam": "MAINTENANCE_TEAM",
+      "expectedSlaMinutes": 30
+    },
+    {
+      "id": "rout-002",
+      "issueTitle": "Massive Cooking Oil Spill in Aisle 4",
+      "category": "SLIP_FALL_HAZARD",
+      "description": "Cooking oil shattered on tile, high slip hazard for customers.",
+      "priorityTier": "P1_CRITICAL",
+      "severityScore": 0.95,
+      "isSafetyHazard": true,
+      "expectedDomain": "JANITORIAL_SANITATION",
+      "expectedTargetTeam": "STORE_MANAGER",
+      "expectedSlaMinutes": 15
+    },
+    {
+      "id": "rout-003",
+      "issueTitle": "Front Checkout Register 3 Scanner Frozen",
+      "category": "POS_EQUIPMENT",
+      "description": "Barcode scanner laser unresponsive, line backing up.",
+      "priorityTier": "P3_MEDIUM",
+      "severityScore": 0.45,
+      "isSafetyHazard": false,
+      "expectedDomain": "POS_HARDWARE",
+      "expectedTargetTeam": "OPERATIONS_MANAGER",
+      "expectedSlaMinutes": 240
+    },
+    {
+      "id": "rout-004",
+      "issueTitle": "Dairy Milk Cartons Expired and Curdling on Display",
+      "category": "FOOD_SAFETY",
+      "description": "Cartons have expiration date 3 days ago, sour odor detected.",
+      "priorityTier": "P2_HIGH",
+      "severityScore": 0.75,
+      "isSafetyHazard": true,
+      "expectedDomain": "FOOD_SAFETY",
+      "expectedTargetTeam": "STORE_MANAGER",
+      "expectedSlaMinutes": 30
+    },
+    {
+      "id": "rout-005",
+      "issueTitle": "Public Restroom Toilet Clogged and Leaking",
+      "category": "RESTROOM_HYGIENE",
+      "description": "Water overflowing stall 2 onto customer walkway.",
+      "priorityTier": "P2_HIGH",
+      "severityScore": 0.70,
+      "isSafetyHazard": true,
+      "expectedDomain": "JANITORIAL_SANITATION",
+      "expectedTargetTeam": "STORE_MANAGER",
+      "expectedSlaMinutes": 30
+    },
+    {
+      "id": "rout-006",
+      "issueTitle": "HVAC Unit 2 Overheating in Bakery Concourse",
+      "category": "EQUIPMENT_ISSUE",
+      "description": "Air conditioning unit blowing hot ambient air and humming loudly.",
+      "priorityTier": "P2_HIGH",
+      "severityScore": 0.65,
+      "isSafetyHazard": false,
+      "expectedDomain": "REFRIGERATION_HVAC",
+      "expectedTargetTeam": "MAINTENANCE_TEAM",
+      "expectedSlaMinutes": 60
+    },
+    {
+      "id": "rout-007",
+      "issueTitle": "Self-Pay Kiosk Pinpad Display Garbled",
+      "category": "CHECKOUT_DELAY",
+      "description": "Pinpad screen unreadable, customers cannot enter PIN.",
+      "priorityTier": "P3_MEDIUM",
+      "severityScore": 0.40,
+      "isSafetyHazard": false,
+      "expectedDomain": "POS_HARDWARE",
+      "expectedTargetTeam": "OPERATIONS_MANAGER",
+      "expectedSlaMinutes": 240
+    },
+    {
+      "id": "rout-008",
+      "issueTitle": "Puddle Near Produce Water Mist Spray",
+      "category": "SLIP_FALL_HAZARD",
+      "description": "Sprayer excess drainage forming water slick on polished concrete.",
+      "priorityTier": "P2_HIGH",
+      "severityScore": 0.60,
+      "isSafetyHazard": true,
+      "expectedDomain": "JANITORIAL_SANITATION",
+      "expectedTargetTeam": "STORE_MANAGER",
+      "expectedSlaMinutes": 30
+    },
+    {
+      "id": "rout-009",
+      "issueTitle": "Meat Department Deli Slicer Blade Dull",
+      "category": "EQUIPMENT_ISSUE",
+      "description": "Deli slicer shredding ham rather than clean cut, blade needs replacement.",
+      "priorityTier": "P4_LOW",
+      "severityScore": 0.25,
+      "isSafetyHazard": false,
+      "expectedDomain": "UNKNOWN_DOMAIN",
+      "expectedTargetTeam": "OPERATIONS_MANAGER",
+      "expectedSlaMinutes": 1440
+    },
+    {
+      "id": "rout-010",
+      "issueTitle": "Seafood Chilled Counter Temperature Reading 46F",
+      "category": "FOOD_SAFETY",
+      "description": "Shellfish bed temperature rising above HACCP critical threshold.",
+      "priorityTier": "P1_CRITICAL",
+      "severityScore": 0.90,
+      "isSafetyHazard": true,
+      "expectedDomain": "FOOD_SAFETY",
+      "expectedTargetTeam": "STORE_MANAGER",
+      "expectedSlaMinutes": 15
+    }
+  ]
+}
