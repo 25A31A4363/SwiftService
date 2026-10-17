@@ -2,8 +2,19 @@
  * R5 Operational Intelligence Platform - Client API Service
  */
 import { state } from './state.js';
+import { mockBackend } from './mock-backend.js';
 
 const API_BASE = '/api/v1';
+
+// Detect if running on static hosting environments (Netlify, GitHub Pages, or local file)
+const isStaticHost = typeof window !== 'undefined' && (
+  window.location.hostname.includes('netlify.app') ||
+  window.location.hostname.includes('github.io') ||
+  window.location.hostname.includes('surge.sh') ||
+  window.location.protocol === 'file:'
+);
+
+let forceMockBackend = isStaticHost;
 
 export function showToast(message, type = 'info') {
   const container = document.getElementById('toast-container');
@@ -31,6 +42,11 @@ export function showToast(message, type = 'info') {
 }
 
 export async function apiRequest(endpoint, options = {}) {
+  // If static hosting detected or live backend unavailable, engage mock backend directly
+  if (forceMockBackend) {
+    return await mockBackend.handleRequest(endpoint, options);
+  }
+
   const headers = {
     'Content-Type': 'application/json',
     ...(options.headers || {})
@@ -47,9 +63,22 @@ export async function apiRequest(endpoint, options = {}) {
       headers
     });
 
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      // Returned HTML or static fallback rewrite
+      console.warn(`[R5 Platform] API endpoint ${endpoint} returned non-JSON. Falling back to autonomous client engine.`);
+      forceMockBackend = true;
+      return await mockBackend.handleRequest(endpoint, options);
+    }
+
     const json = await response.json();
 
     if (!response.ok || !json.success) {
+      if (response.status === 404) {
+        console.warn(`[R5 Platform] Endpoint ${endpoint} returned 404. Falling back to autonomous client engine.`);
+        return await mockBackend.handleRequest(endpoint, options);
+      }
+
       const errMessage = json?.error?.message || `HTTP Error ${response.status}`;
       if (response.status === 401 && state.token) {
         showToast('Session expired. Please re-authenticate.', 'error');
@@ -62,6 +91,13 @@ export async function apiRequest(endpoint, options = {}) {
 
     return json.data;
   } catch (err) {
+    // If network failure or backend not responding, fallback to mock backend
+    if (err.name === 'TypeError' || err.message?.includes('Failed to fetch') || err.message?.includes('NetworkError') || err.message?.includes('JSON')) {
+      console.warn(`[R5 Platform] Live backend unreachable for ${endpoint}. Falling back to autonomous client engine.`);
+      forceMockBackend = true;
+      return await mockBackend.handleRequest(endpoint, options);
+    }
+
     if (!endpoint.includes('/auth/login')) {
       console.error(`API Error on ${endpoint}:`, err);
     }

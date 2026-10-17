@@ -1,0 +1,99 @@
+/* ==============================================================================
+   R5 Operational Intelligence Platform - Design Tokens
+   Modern Dark-Mode Palette with Glassmorphism and Vibrant HSL Accents
+   ============================================================================== */
+
+:root {
+  /* Typography */
+  --font-family-sans: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Color Palette - Deep Dark Slate Core */
+  --bg-primary: #0b0f19;
+  --bg-secondary: #111827;
+  --bg-surface: #1a2234;
+  --bg-surface-hover: #222d44;
+  --bg-surface-glass: rgba(26, 34, 52, 0.75);
+  --bg-overlay: rgba(11, 15, 25, 0.85);
+
+  /* Borders & Dividers */
+  --border-subtle: #1e293b;
+  --border-medium: #334155;
+  --border-focus: #3b82f6;
+
+  /* Text Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #0b0f19;
+
+  /* Brand Accents & Gradients */
+  --accent-primary: #3b82f6;
+  --accent-primary-hover: #2563eb;
+  --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  --accent-cyan: #06b6d4;
+  --accent-purple: #8b5cf6;
+
+  /* Priority & Status Tokens */
+  --p1-critical: #ef4444;
+  --p1-critical-bg: rgba(239, 68, 68, 0.15);
+  --p1-critical-border: rgba(239, 68, 68, 0.4);
+
+  --p2-high: #f97316;
+  --p2-high-bg: rgba(249, 115, 22, 0.15);
+  --p2-high-border: rgba(249, 115, 22, 0.4);
+
+  --p3-medium: #eab308;
+  --p3-medium-bg: rgba(234, 179, 8, 0.15);
+  --p3-medium-border: rgba(234, 179, 8, 0.4);
+
+  --p4-low: #10b981;
+  --p4-low-bg: rgba(16, 185, 129, 0.15);
+  --p4-low-border: rgba(16, 185, 129, 0.4);
+
+  --status-verifying: #a855f7;
+  --status-verifying-bg: rgba(168, 85, 247, 0.15);
+
+  /* Epistemic Claim Tokens */
+  --epistemic-fact: #10b981;
+  --epistemic-fact-bg: rgba(16, 185, 129, 0.16);
+  --epistemic-fact-border: rgba(16, 185, 129, 0.4);
+
+  --epistemic-hypothesis: #38bdf8;
+  --epistemic-hypothesis-bg: rgba(56, 189, 248, 0.16);
+  --epistemic-hypothesis-border: rgba(56, 189, 248, 0.4);
+
+  --epistemic-recommendation: #a855f7;
+  --epistemic-recommendation-bg: rgba(168, 85, 247, 0.16);
+  --epistemic-recommendation-border: rgba(168, 85, 247, 0.4);
+
+  --epistemic-unknown: #f59e0b;
+  --epistemic-unknown-bg: rgba(245, 158, 11, 0.16);
+  --epistemic-unknown-border: rgba(245, 158, 11, 0.4);
+
+  /* Accessibility & Focus Tokens */
+  --focus-ring-color: #60a5fa;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --text-contrast-high: #ffffff;
+
+  /* Shadows & Elevation */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+  --shadow-glow-blue: 0 0 20px rgba(59, 130, 246, 0.25);
+  --shadow-glow-red: 0 0 20px rgba(239, 68, 68, 0.35);
+
+  /* Layout Constants */
+  --sidebar-width: 260px;
+  --topbar-height: 68px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
