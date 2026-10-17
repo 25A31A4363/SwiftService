@@ -1,6 +1,6 @@
 # R5 Operational Intelligence Platform — System Evaluation Report
-**Run Identifier**: `eval-run-891320c01cff`  
-**Evaluation Timestamp**: `2026-10-17T11:24:43.883545+00:00`  
+**Run Identifier**: `eval-run-f8ef597016c5`  
+**Evaluation Timestamp**: `2026-10-17T13:19:25.988930+00:00`  
 **Framework Version**: `1.0.0`  
 **Execution Environment**: Python 3.14.3, Windows-11-10.0.26200-SP0  
 
@@ -228,4 +228,4 @@ All evaluation datasets are version-controlled, synthetic, and explicitly labele
 | `synthetic_routing.json` | `ROUTING_ACCURACY` | 10 | `CONTROLLED_SYNTHETIC_EVALUATION_DATA` |
 
 ---
-*Report compiled deterministically by R5 Evaluation Runner at 2026-10-17T11:24:43.883545+00:00.*
+*Report compiled deterministically by R5 Evaluation Runner at 2026-10-17T13:19:25.988930+00:00.*

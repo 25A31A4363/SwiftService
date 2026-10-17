@@ -47,3 +47,12 @@ class LoginResponse(BaseModel):
     token: str
     user: UserResponse
     expiresIn: str
+
+class ProfileUpdateRequest(BaseModel):
+    fullName: Optional[str] = Field(None, min_length=2, max_length=120)
+    email: Optional[str] = Field(None, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+class ChangePasswordRequest(BaseModel):
+    currentPassword: str = Field(..., min_length=1, description="Existing account password for verification")
+    newPassword: str = Field(..., min_length=8, description="New password, minimum 8 characters")
+    confirmPassword: Optional[str] = None

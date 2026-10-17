@@ -2011,6 +2011,14 @@ async function openEditUserModal(userId, onSuccess) {
             <input type="text" id="eu-name" class="form-input" required value="${user.fullName}" />
           </div>
           <div class="form-group">
+            <label class="form-label">Email Address (Login Username)</label>
+            <input type="email" id="eu-email" class="form-input" required value="${user.email}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Reset Password (Optional &mdash; minimum 8 characters)</label>
+            <input type="password" id="eu-password" class="form-input" placeholder="Leave blank to keep existing password" autocomplete="new-password" />
+          </div>
+          <div class="form-group">
             <label class="form-label">System Role</label>
             <select id="eu-role" class="form-select" required>
               <option value="ORGANIZATION_ADMIN" ${user.role === 'ORGANIZATION_ADMIN' ? 'selected' : ''}>Organization Admin</option>
@@ -2052,7 +2060,7 @@ async function openEditUserModal(userId, onSuccess) {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" id="btn-cancel-modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-user-submit">Save Profile Changes</button>
         </div>
       </form>
     `);
@@ -2062,19 +2070,37 @@ async function openEditUserModal(userId, onSuccess) {
 
     document.getElementById('form-edit-user').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const pwdVal = document.getElementById('eu-password').value.trim();
+      if (pwdVal && pwdVal.length < 8) {
+        showToast('Password must be at least 8 characters long.', 'error');
+        return;
+      }
+      const updatePayload = {
+        fullName: document.getElementById('eu-name').value.trim(),
+        email: document.getElementById('eu-email').value.trim().toLowerCase(),
+        role: document.getElementById('eu-role').value,
+        regionId: document.getElementById('eu-region').value || null,
+        storeId: document.getElementById('eu-store').value || null,
+        teamId: document.getElementById('eu-team').value || null,
+        isActive: document.getElementById('eu-active').checked
+      };
+      if (pwdVal) {
+        updatePayload.password = pwdVal;
+      }
+
+      const btnSubmit = document.getElementById('btn-save-user-submit');
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Saving...';
+
       try {
-        await api.updateUser(userId, {
-          fullName: document.getElementById('eu-name').value.trim(),
-          role: document.getElementById('eu-role').value,
-          regionId: document.getElementById('eu-region').value || null,
-          storeId: document.getElementById('eu-store').value || null,
-          teamId: document.getElementById('eu-team').value || null,
-          isActive: document.getElementById('eu-active').checked
-        });
-        showToast('User profile updated.', 'success');
+        const updated = await api.updateUser(userId, updatePayload);
+        showToast(`User ${updated.fullName} updated successfully.`, 'success');
         closeModal();
         if (onSuccess) onSuccess();
-      } catch (err) {}
+      } catch (err) {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = 'Save Profile Changes';
+      }
     });
   } catch (err) {
     showToast('Failed to load user: ' + err.message, 'error');

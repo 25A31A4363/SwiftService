@@ -41,30 +41,29 @@ import {
 } from './ui-utils.js';
 
 async function init() {
+  // Apply saved theme preference (default: dark)
+  const savedTheme = localStorage.getItem('r5_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+
   state.subscribe(render);
 
-  if (state.token && state.user) {
+  if (state.token) {
     try {
+      // Validate session with backend source of truth
+      const me = await api.getMe();
+      state.user = me;
+      localStorage.setItem('r5_user', JSON.stringify(me));
       await loadInitialData();
-    } catch {
+    } catch (err) {
+      console.warn('Session verification failed, prompting login:', err);
       state.setAuth(null, null);
     }
   } else {
-    // Default to Store Manager for instant demo readiness
-    await autoLoginDemo('storemanager@apex.com');
+    // Unauthenticated: display secure login view (no silent fallback)
+    render();
   }
 }
 
-async function autoLoginDemo(email) {
-  try {
-    const res = await api.login(email, 'Password123!');
-    state.setAuth(res.token, res.user);
-    await loadInitialData();
-    showToast(`Logged in as ${res.user.fullName} (${res.user.role})`, 'success');
-  } catch (err) {
-    showToast('Failed to initialize demo credentials: ' + err.message, 'error');
-  }
-}
 
 async function loadInitialData() {
   try {
@@ -196,7 +195,43 @@ function render() {
         </div>
 
         <div class="topbar-actions-group">
-          <div class="user-profile-badge" title="Authenticated User Context">
+          <!-- Theme Toggle (Dark / Light Enterprise Mode) -->
+          <button id="btn-theme-toggle" class="btn btn-secondary btn-sm" title="Toggle Light/Dark Theme" aria-label="Toggle theme mode" style="padding: 0.35rem 0.65rem; font-size: 0.95rem;">
+            🌓
+          </button>
+
+          <!-- Notification Center -->
+          <div class="topbar-notifications-wrapper" style="position: relative;">
+            <button id="btn-notifications-toggle" class="btn btn-secondary btn-sm" title="Operations Notifications" aria-label="Notifications" style="position: relative; padding: 0.35rem 0.65rem;">
+              🔔
+              ${state.activeAlertsCount > 0 ? `<span class="notification-indicator-dot"></span>` : ''}
+            </button>
+            <div id="topbar-notifications-dropdown" class="topbar-notifications-dropdown" style="display: none; position: absolute; right: 0; top: calc(100% + 6px); width: 290px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden;">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; background: var(--bg-elevated);">
+                <span style="font-weight: 700; font-size: 0.85rem; color: #fff;">Operational Alerts</span>
+                <span class="badge ${state.activeAlertsCount > 0 ? 'badge-p1' : 'badge-neutral'}" style="font-size: 0.68rem;">
+                  ${state.activeAlertsCount} Unacknowledged
+                </span>
+              </div>
+              <div style="max-height: 240px; overflow-y: auto; padding: 0.5rem 0;">
+                ${state.activeAlertsCount > 0 ? `
+                  <div style="padding: 0.6rem 1rem; border-bottom: 1px solid var(--border-subtle); cursor: pointer;" id="btn-notif-view-alerts">
+                    <div style="font-weight: 600; font-size: 0.82rem; color: #f87171;">⚠️ Active Operational Alert</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">
+                      Store #${getSelectedStoreNumber()} has ${state.activeAlertsCount} active alert(s) requiring acknowledgment.
+                    </div>
+                  </div>
+                ` : `
+                  <div style="padding: 1.25rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+                    ✓ All clear. No unacknowledged alerts.
+                  </div>
+                `}
+              </div>
+            </div>
+          </div>
+
+          <!-- User Profile & Account Settings Button -->
+          <div class="user-profile-badge" id="btn-user-profile" role="button" tabindex="0" title="Click to manage profile, email & password" style="cursor: pointer;">
             <div class="user-avatar-circle">
               ${escapeHtml(state.user.fullName.split(' ').map(n => n[0]).join('').slice(0, 2))}
             </div>
@@ -204,8 +239,11 @@ function render() {
               <span class="user-name">${escapeHtml(state.user.fullName)}</span>
               <span class="user-role-chip">${escapeHtml(state.user.role.replace(/_/g, ' '))}</span>
             </div>
+            <span style="font-size: 0.85rem; color: var(--text-muted); margin-left: 2px;" title="Account Settings">⚙️</span>
           </div>
-          <button id="btn-logout" class="btn btn-secondary btn-sm" title="Sign Out">Sign Out</button>
+
+          <!-- Sign Out Button -->
+          <button id="btn-logout" class="btn btn-secondary btn-sm" title="Sign Out of Session">Sign Out</button>
         </div>
       </header>
 
@@ -264,12 +302,19 @@ function attachGlobalEvents() {
     });
   });
 
-  // Topbar switchers
+  // Topbar Context Switchers
   const selOrg = document.getElementById('select-org');
   if (selOrg) {
     selOrg.addEventListener('change', async (e) => {
       state.selectedOrgId = e.target.value;
+      const regions = await api.getRegions(state.selectedOrgId);
+      state.regions = regions;
+      if (regions.length > 0) state.selectedRegionId = regions[0].id;
+      const stores = await api.getStores(state.selectedOrgId, state.selectedRegionId);
+      state.stores = stores;
+      if (stores.length > 0) state.selectedStoreId = stores[0].id;
       await loadInitialData();
+      showToast('Context updated to organization', 'info');
     });
   }
 
@@ -280,25 +325,72 @@ function attachGlobalEvents() {
       const stores = await api.getStores(state.selectedOrgId, state.selectedRegionId);
       state.stores = stores;
       if (stores.length > 0) state.selectedStoreId = stores[0].id;
-      state.notify();
+      await loadInitialData();
+      showToast('Context updated to region', 'info');
     });
   }
 
   const selStore = document.getElementById('select-store');
   if (selStore) {
-    selStore.addEventListener('change', (e) => {
+    selStore.addEventListener('change', async (e) => {
       state.selectedStoreId = e.target.value;
-      loadInitialData();
+      await loadInitialData();
+      showToast('Facility switched to Store #' + getSelectedStoreNumber(), 'info');
     });
   }
 
-  // Role switcher modal
+  // Theme Toggle (Dark / Light Mode)
+  const btnThemeToggle = document.getElementById('btn-theme-toggle');
+  if (btnThemeToggle) {
+    btnThemeToggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('r5_theme', newTheme);
+      showToast(`Visual theme switched to ${newTheme} mode`, 'info');
+    });
+  }
+
+  // Notification Center Dropdown
+  const btnNotifications = document.getElementById('btn-notifications-toggle');
+  const notifDropdown = document.getElementById('topbar-notifications-dropdown');
+  if (btnNotifications && notifDropdown) {
+    btnNotifications.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notifDropdown.style.display = notifDropdown.style.display === 'none' ? 'block' : 'none';
+    });
+    document.addEventListener('click', () => {
+      if (notifDropdown) notifDropdown.style.display = 'none';
+    });
+    const btnViewAlerts = document.getElementById('btn-notif-view-alerts');
+    if (btnViewAlerts) {
+      btnViewAlerts.addEventListener('click', () => {
+        notifDropdown.style.display = 'none';
+        state.setView('alerts');
+      });
+    }
+  }
+
+  // User Profile -> Account & Security Settings Modal
+  const btnUserProfile = document.getElementById('btn-user-profile');
+  if (btnUserProfile) {
+    const handleAccountClick = () => openAccountSettingsModal();
+    btnUserProfile.addEventListener('click', handleAccountClick);
+    btnUserProfile.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleAccountClick();
+      }
+    });
+  }
+
+  // Role switcher modal (Evaluation Sandbox)
   const btnRoleSwitch = document.getElementById('btn-open-role-switcher');
   if (btnRoleSwitch) {
     btnRoleSwitch.addEventListener('click', openRoleSwitcherModal);
   }
 
-  // Logout
+  // Secure Sign Out
   const btnLogout = document.getElementById('btn-logout');
   if (btnLogout) {
     btnLogout.addEventListener('click', async () => {
@@ -306,7 +398,7 @@ function attachGlobalEvents() {
         await api.logout();
       } catch {}
       state.setAuth(null, null);
-      showToast('Signed out successfully.', 'info');
+      showToast('Signed out of session safely.', 'info');
     });
   }
 }
@@ -407,70 +499,93 @@ async function renderDashboardView(container) {
       return matchesSearch && matchesPriority && matchesStatus;
     });
 
+    const topCritical = p1Issues[0] || emergingAnomalies[0];
+
     container.innerHTML = `
-      <!-- Emerging Anomaly Alert Callout Banner -->
-      ${emergingAnomalies.length > 0 ? `
-        <div style="background: linear-gradient(90deg, rgba(239, 68, 68, 0.2) 0%, rgba(26, 34, 52, 0.8) 100%); border-left: 4px solid var(--p1-critical); border-radius: var(--radius-md); padding: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;" role="alert">
-          <div style="display: flex; align-items: center; gap: 1rem;">
-            <span class="anomaly-pulse"><span class="pulse-dot"></span> EMERGING ANOMALY ACTIVE</span>
+      <!-- Operational Storytelling Top Banner (What Needs Attention Now?) -->
+      ${topCritical ? `
+        <div class="hero-crisis-card" role="alert" style="background: linear-gradient(90deg, rgba(239, 68, 68, 0.16) 0%, rgba(26, 34, 52, 0.85) 100%); border-left: 4px solid var(--p1-critical); border-radius: var(--radius-md); padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15);">
+          <div style="display: flex; align-items: flex-start; gap: 1rem; max-width: 750px;">
+            <span class="anomaly-pulse" style="margin-top: 2px;"><span class="pulse-dot"></span> P1 ESCALATION ACTIVE</span>
             <div>
-              <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">${escapeHtml(emergingAnomalies[0].title)}</div>
-              <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">
-                Velocity Z-Score: <strong>+${emergingAnomalies[0].anomalyVelocityZScore}z</strong> above 14-day Poisson baseline. Priority floor: <strong>P1_CRITICAL (Score: ${emergingAnomalies[0].priorityScore})</strong>.
+              <div style="font-weight: 700; color: #fff; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <span>${escapeHtml(topCritical.title)}</span>
+                <span class="badge badge-p1" style="font-size: 0.68rem;">Score: ${topCritical.priorityScore}/100</span>
+                <span class="badge badge-neutral" style="font-size: 0.68rem;">Store #${getSelectedStoreNumber()}</span>
+              </div>
+              <div style="font-size: 0.82rem; color: #cbd5e1; margin-top: 5px; line-height: 1.45;">
+                <strong>Hypothesis:</strong> <span style="color: #38bdf8;">${escapeHtml(topCritical.rootCauseHypothesis || 'Technician diagnostics needed')}</span>
+                &bull; Assigned: <strong>${escapeHtml(topCritical.assignedTeamName || 'Fast-Response Team')}</strong>
               </div>
             </div>
           </div>
-          <div style="display: flex; gap: 0.5rem;">
-            <button class="btn btn-danger btn-sm" id="btn-inspect-anomaly" data-id="${emergingAnomalies[0].id}">
+          <div style="display: flex; gap: 0.65rem;">
+            <button class="btn btn-danger btn-sm" id="btn-hero-inspect" data-id="${topCritical.id}">
               🔍 Inspect Evidence & Triage
+            </button>
+            <button class="btn btn-primary btn-sm" id="btn-hero-dispatch" data-id="${topCritical.id}">
+              ⚡ Rapid Dispatch
             </button>
           </div>
         </div>
-      ` : ''}
+      ` : `
+        <div class="hero-operational-card" style="background: linear-gradient(90deg, rgba(16, 185, 129, 0.12) 0%, rgba(26, 34, 52, 0.6) 100%); border-left: 4px solid var(--accent-emerald); border-radius: var(--radius-md); padding: 1.1rem 1.35rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <span style="font-size: 1.6rem;">🛡️</span>
+            <div>
+              <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">Operations Steady — Zero Critical P1 Escalations</div>
+              <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">
+                All active incidents within target SLA window for Store #${getSelectedStoreNumber()}. Closed-loop verification active.
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btn-hero-create-incident">+ Log Operational Issue</button>
+        </div>
+      `}
 
-      <!-- KPI Metrics Grid -->
+      <!-- Clickable KPI Metrics Grid (Context Filters) -->
       <div class="kpi-grid">
-        <div class="kpi-card">
+        <div class="kpi-card clickable" id="kpi-card-active" role="button" tabindex="0" title="Click to filter table to all active incidents" style="cursor: pointer;">
           <div class="kpi-card-header">
             <span>Active Incidents</span>
             <span>🚨</span>
           </div>
           <div class="kpi-value-row">
             <span class="kpi-value">${activeIssues.length}</span>
-            <span class="kpi-trend neutral">Store #${getSelectedStoreNumber()}</span>
+            <span class="kpi-trend neutral">Store #${getSelectedStoreNumber()} (Click to View)</span>
           </div>
         </div>
 
-        <div class="kpi-card critical">
+        <div class="kpi-card critical clickable" id="kpi-card-p1" role="button" tabindex="0" title="Click to isolate Critical P1 incidents" style="cursor: pointer;">
           <div class="kpi-card-header">
             <span>Critical P1 Incidents</span>
             <span>🔥</span>
           </div>
           <div class="kpi-value-row">
             <span class="kpi-value">${p1Issues.length}</span>
-            <span class="kpi-trend" style="color: var(--p1-critical);">SLA &lt; 15m Target</span>
+            <span class="kpi-trend" style="color: var(--p1-critical);">SLA &lt; 15m (Click to Filter)</span>
           </div>
         </div>
 
-        <div class="kpi-card highlight">
+        <div class="kpi-card highlight clickable" id="kpi-card-approvals" role="button" tabindex="0" title="Click to navigate to Human-in-the-Loop Approvals" style="cursor: pointer;">
           <div class="kpi-card-header">
             <span>Pending Approvals</span>
             <span>⚖️</span>
           </div>
           <div class="kpi-value-row">
             <span class="kpi-value">${pendingActions.length}</span>
-            <span class="kpi-trend neutral">Human-in-the-Loop Gate</span>
+            <span class="kpi-trend neutral">Human-in-the-Loop Gate &rarr;</span>
           </div>
         </div>
 
-        <div class="kpi-card">
+        <div class="kpi-card clickable" id="kpi-card-resolution" role="button" tabindex="0" title="Click to view 72h Closed-Loop Outcome Verification" style="cursor: pointer;">
           <div class="kpi-card-header">
             <span>72h Resolution Rate</span>
             <span>✅</span>
           </div>
           <div class="kpi-value-row">
             <span class="kpi-value">100%</span>
-            <span class="kpi-trend positive">↑ Closed-Loop Verified</span>
+            <span class="kpi-trend positive">↑ Closed-Loop Verified &rarr;</span>
           </div>
         </div>
       </div>
@@ -579,12 +694,12 @@ async function renderDashboardView(container) {
                   </td>
                   <td>
                     <div style="font-weight: 600; color: var(--text-primary); font-size: 0.85rem;">${escapeHtml(item.assignedTeamName || 'Unassigned')}</div>
-                    <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">
-                      SLA: <strong>${item.slaMinutes || 60}m</strong>
+                    <div style="margin-top: 4px;">
+                      ${getSlaCountdownHtml(item)}
                     </div>
                     ${item.slaDeadline ? `
-                      <div style="font-size: 0.7rem; color: #34d399;" title="${item.slaDeadline}">
-                        Due: ${new Date(item.slaDeadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 2px;" title="${item.slaDeadline}">
+                        Target: ${new Date(item.slaDeadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </div>
                     ` : ''}
                   </td>
@@ -642,6 +757,68 @@ async function renderDashboardView(container) {
         dashPriorityFilter = 'ALL';
         dashStatusFilter = 'ALL';
         renderDashboardView(container);
+      });
+    }
+
+    // Hero Banner Action triggers
+    const btnHeroInspect = container.querySelector('#btn-hero-inspect');
+    if (btnHeroInspect) {
+      btnHeroInspect.addEventListener('click', () => openIssueDetailModal(btnHeroInspect.getAttribute('data-id')));
+    }
+
+    const btnHeroDispatch = container.querySelector('#btn-hero-dispatch');
+    if (btnHeroDispatch) {
+      btnHeroDispatch.addEventListener('click', async () => {
+        const id = btnHeroDispatch.getAttribute('data-id');
+        try {
+          await api.updateIssueStatus(id, 'DISPATCHED', 'Rapid dispatch initiated from Command Center Hero Alert');
+          showToast('Fast-Response technician dispatched!', 'success');
+          await loadInitialData();
+          await renderDashboardView(container);
+        } catch (err) {
+          showToast('Dispatch failed: ' + err.message, 'error');
+        }
+      });
+    }
+
+    const btnHeroCreateInc = container.querySelector('#btn-hero-create-incident');
+    if (btnHeroCreateInc) {
+      btnHeroCreateInc.addEventListener('click', openCreateIssueModal);
+    }
+
+    // Clickable KPI Metrics Grid triggers
+    const kpiActive = container.querySelector('#kpi-card-active');
+    if (kpiActive) {
+      kpiActive.addEventListener('click', () => {
+        dashStatusFilter = 'ALL';
+        dashPriorityFilter = 'ALL';
+        dashSearchQuery = '';
+        renderDashboardView(container);
+        showToast('Viewing all active store incidents', 'info');
+      });
+    }
+
+    const kpiP1 = container.querySelector('#kpi-card-p1');
+    if (kpiP1) {
+      kpiP1.addEventListener('click', () => {
+        dashPriorityFilter = 'P1_CRITICAL';
+        dashStatusFilter = 'ALL';
+        renderDashboardView(container);
+        showToast('Filtered table to Critical P1 incidents', 'info');
+      });
+    }
+
+    const kpiApprovals = container.querySelector('#kpi-card-approvals');
+    if (kpiApprovals) {
+      kpiApprovals.addEventListener('click', () => {
+        state.setView('actions');
+      });
+    }
+
+    const kpiResolution = container.querySelector('#kpi-card-resolution');
+    if (kpiResolution) {
+      kpiResolution.addEventListener('click', () => {
+        state.setView('outcomes');
       });
     }
 
@@ -1536,60 +1713,376 @@ function closeModal() {
   elModalContainer.innerHTML = '';
 }
 
+export function openEvidenceDrawer(evidenceData) {
+  let drawerContainer = document.getElementById('drawer-container');
+  if (!drawerContainer) {
+    drawerContainer = document.createElement('div');
+    drawerContainer.id = 'drawer-container';
+    document.body.appendChild(drawerContainer);
+  }
+
+  drawerContainer.innerHTML = `
+    <div class="r5-drawer-backdrop" id="drawer-backdrop">
+      <div class="r5-drawer">
+        <div class="r5-drawer-header">
+          <div class="r5-drawer-title">
+            <span>📜</span>
+            <span>${escapeHtml(evidenceData.title || 'Evidence & Grounded Lineage')}</span>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btn-close-drawer" aria-label="Close Evidence Drawer">✕</button>
+        </div>
+        <div class="r5-drawer-body">
+          ${evidenceData.bodyHtml || ''}
+        </div>
+      </div>
+    </div>
+  `;
+
+  const closeDrawer = () => {
+    drawerContainer.innerHTML = '';
+  };
+
+  document.getElementById('btn-close-drawer')?.addEventListener('click', closeDrawer);
+  document.getElementById('drawer-backdrop')?.addEventListener('click', (e) => {
+    if (e.target.id === 'drawer-backdrop') closeDrawer();
+  });
+}
+
+async function openAccountSettingsModal() {
+  if (!state.user) return;
+
+  let currentUser = state.user;
+  try {
+    currentUser = await api.getMe();
+    state.user = currentUser;
+    localStorage.setItem('r5_user', JSON.stringify(currentUser));
+  } catch (err) {
+    console.warn('Could not refresh authoritative user profile:', err);
+  }
+
+  openModal(`
+    <div class="modal-header">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.25rem;">⚙️</span>
+        <div>
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: #fff;">Account & Security Settings</h3>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Manage your profile identity, login email, and security credentials</div>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="btn-close-modal" aria-label="Close Settings">✕</button>
+    </div>
+
+    <div class="modal-body" style="padding: 1.25rem;">
+      <!-- Tab Navigation -->
+      <div class="account-settings-tabs" style="display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border-subtle); margin-bottom: 1.25rem; padding-bottom: 0.5rem;">
+        <button class="account-settings-tab active" id="tab-btn-profile" type="button" style="padding: 0.5rem 1rem; border-radius: var(--radius-sm); border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; background: var(--accent-indigo); color: #fff;">
+          👤 Profile Details
+        </button>
+        <button class="account-settings-tab" id="tab-btn-security" type="button" style="padding: 0.5rem 1rem; border-radius: var(--radius-sm); border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; background: var(--bg-surface); color: var(--text-secondary);">
+          🔒 Password & Credentials
+        </button>
+      </div>
+
+      <!-- Tab Content: Profile Details -->
+      <div id="tab-content-profile" class="account-settings-panel">
+        <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1.25rem; padding: 0.75rem 1rem; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+          <div class="user-avatar-circle" style="width: 44px; height: 44px; font-size: 1.1rem;">
+            ${escapeHtml(currentUser.fullName.split(' ').map(n => n[0]).join('').slice(0, 2))}
+          </div>
+          <div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">${escapeHtml(currentUser.fullName)}</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem; margin-top: 2px;">
+              <span class="badge badge-neutral" style="font-size: 0.65rem;">${escapeHtml(currentUser.role.replace(/_/g, ' '))}</span>
+              <span>• Store #${getSelectedStoreNumber()}</span>
+            </div>
+          </div>
+        </div>
+
+        <form id="form-update-profile" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="profile-name">Full Name</label>
+            <input type="text" id="profile-name" class="form-input" required value="${escapeHtml(currentUser.fullName)}" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="profile-email">
+              Corporate Email Address <span style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 500;">(Authoritative Login Identifier)</span>
+            </label>
+            <input type="email" id="profile-email" class="form-input" required value="${escapeHtml(currentUser.email)}" autocomplete="email" />
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+              Updating this email changes your sign-in address. Changes are validated and persisted to the SQLite database.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Operational Role</label>
+            <input type="text" class="form-input" value="${escapeHtml(currentUser.role)}" disabled style="opacity: 0.7; cursor: not-allowed;" />
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 3px;">
+              Privileged role escalation requires Organization Administrator authorization.
+            </div>
+          </div>
+
+          <div id="profile-status-msg" style="display: none; padding: 0.6rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.82rem;"></div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-profile">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="btn-submit-profile">Save Profile Changes</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Tab Content: Password & Security -->
+      <div id="tab-content-security" class="account-settings-panel" style="display: none;">
+        <form id="form-update-password" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="pwd-current">Current Password</label>
+            <div style="position: relative;">
+              <input type="password" id="pwd-current" class="form-input" required autocomplete="current-password" placeholder="Verify identity with current password" />
+              <button type="button" class="btn-pwd-toggle" data-target="pwd-current" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem;" title="Toggle Password Visibility">👁️</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="pwd-new">New Password</label>
+            <div style="position: relative;">
+              <input type="password" id="pwd-new" class="form-input" required minlength="8" autocomplete="new-password" placeholder="Minimum 8 characters" />
+              <button type="button" class="btn-pwd-toggle" data-target="pwd-new" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem;" title="Toggle Password Visibility">👁️</button>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+              Must be at least 8 characters. Password will be securely hashed with bcrypt.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="pwd-confirm">Confirm New Password</label>
+            <div style="position: relative;">
+              <input type="password" id="pwd-confirm" class="form-input" required minlength="8" autocomplete="new-password" placeholder="Re-type new password" />
+              <button type="button" class="btn-pwd-toggle" data-target="pwd-confirm" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem;" title="Toggle Password Visibility">👁️</button>
+            </div>
+          </div>
+
+          <div id="pwd-status-msg" style="display: none; padding: 0.6rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.82rem;"></div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-pwd">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="btn-submit-pwd">Update Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `);
+
+  // Tab switching
+  const tabBtnProfile = document.getElementById('tab-btn-profile');
+  const tabBtnSecurity = document.getElementById('tab-btn-security');
+  const panelProfile = document.getElementById('tab-content-profile');
+  const panelSecurity = document.getElementById('tab-content-security');
+
+  tabBtnProfile.addEventListener('click', () => {
+    tabBtnProfile.style.background = 'var(--accent-indigo)';
+    tabBtnProfile.style.color = '#fff';
+    tabBtnSecurity.style.background = 'var(--bg-surface)';
+    tabBtnSecurity.style.color = 'var(--text-secondary)';
+    panelProfile.style.display = 'block';
+    panelSecurity.style.display = 'none';
+  });
+
+  tabBtnSecurity.addEventListener('click', () => {
+    tabBtnSecurity.style.background = 'var(--accent-indigo)';
+    tabBtnSecurity.style.color = '#fff';
+    tabBtnProfile.style.background = 'var(--bg-surface)';
+    tabBtnProfile.style.color = 'var(--text-secondary)';
+    panelSecurity.style.display = 'block';
+    panelProfile.style.display = 'none';
+  });
+
+  // Password visibility toggles
+  document.querySelectorAll('.btn-pwd-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+      if (input) {
+        input.type = input.type === 'password' ? 'text' : 'password';
+      }
+    });
+  });
+
+  document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+  document.getElementById('btn-cancel-profile')?.addEventListener('click', closeModal);
+  document.getElementById('btn-cancel-pwd')?.addEventListener('click', closeModal);
+
+  // Profile update form handler
+  const formProfile = document.getElementById('form-update-profile');
+  formProfile.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btnSubmit = document.getElementById('btn-submit-profile');
+    const msgBox = document.getElementById('profile-status-msg');
+    const newName = document.getElementById('profile-name').value.trim();
+    const newEmail = document.getElementById('profile-email').value.trim();
+
+    btnSubmit.disabled = true;
+    btnSubmit.innerText = 'Saving to Database...';
+    msgBox.style.display = 'none';
+
+    try {
+      const updatedUser = await api.updateProfile({ fullName: newName, email: newEmail });
+      // Re-fetch me to verify persistence from the live backend
+      const verifiedMe = await api.getMe();
+      state.user = verifiedMe || updatedUser;
+      localStorage.setItem('r5_user', JSON.stringify(state.user));
+      
+      showToast(`Account updated successfully! Login email is now ${state.user.email}`, 'success');
+      state.notify();
+      closeModal();
+    } catch (err) {
+      msgBox.style.display = 'block';
+      msgBox.style.background = 'rgba(239, 68, 68, 0.15)';
+      msgBox.style.border = '1px solid var(--p1-critical)';
+      msgBox.style.color = '#fca5a5';
+      msgBox.innerText = 'Error: ' + err.message;
+      btnSubmit.disabled = false;
+      btnSubmit.innerText = 'Save Profile Changes';
+    }
+  });
+
+  // Password update form handler
+  const formPwd = document.getElementById('form-update-password');
+  formPwd.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btnSubmit = document.getElementById('btn-submit-pwd');
+    const msgBox = document.getElementById('pwd-status-msg');
+    const currentPassword = document.getElementById('pwd-current').value;
+    const newPassword = document.getElementById('pwd-new').value;
+    const confirmPassword = document.getElementById('pwd-confirm').value;
+
+    if (newPassword !== confirmPassword) {
+      msgBox.style.display = 'block';
+      msgBox.style.background = 'rgba(239, 68, 68, 0.15)';
+      msgBox.style.border = '1px solid var(--p1-critical)';
+      msgBox.style.color = '#fca5a5';
+      msgBox.innerText = 'New password and confirmation password do not match.';
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      msgBox.style.display = 'block';
+      msgBox.style.background = 'rgba(239, 68, 68, 0.15)';
+      msgBox.style.border = '1px solid var(--p1-critical)';
+      msgBox.style.color = '#fca5a5';
+      msgBox.innerText = 'Password must be at least 8 characters long.';
+      return;
+    }
+
+    btnSubmit.disabled = true;
+    btnSubmit.innerText = 'Updating Password...';
+    msgBox.style.display = 'none';
+
+    try {
+      await api.changePassword({ currentPassword, newPassword });
+      showToast('Password updated securely in database.', 'success');
+      closeModal();
+    } catch (err) {
+      msgBox.style.display = 'block';
+      msgBox.style.background = 'rgba(239, 68, 68, 0.15)';
+      msgBox.style.border = '1px solid var(--p1-critical)';
+      msgBox.style.color = '#fca5a5';
+      msgBox.innerText = 'Password Update Failed: ' + err.message;
+      btnSubmit.disabled = false;
+      btnSubmit.innerText = 'Update Password';
+    }
+  });
+}
+
 function renderLoginModal() {
   openModal(`
     <div class="modal-header">
       <div style="display: flex; align-items: center; gap: 0.75rem;">
         <div class="brand-badge" style="width: 32px; height: 32px; font-size: 1rem;">R5</div>
-        <h2 style="font-size: 1.15rem; font-weight: 700;">Sign In — R5 Platform</h2>
+        <div>
+          <h2 style="font-size: 1.15rem; font-weight: 700; color: #fff;">Sign In — R5 Intelligence</h2>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">Retail Operations Intelligence & Incident Management Platform</div>
+        </div>
       </div>
     </div>
     <div class="modal-body">
-      <div style="font-size: 0.85rem; color: var(--text-secondary);">
-        Select a role preset for rapid validation, or enter custom enterprise credentials:
+      <!-- Demo Persona Sandbox Quick-Fill -->
+      <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem 1rem; margin-bottom: 1rem;">
+        <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 0.35rem;">
+          ⚡ Quick-Fill Demo Personas (Evaluation Sandbox)
+        </div>
+        <div class="role-preset-grid" style="margin-top: 0.5rem;">
+          ${ROLE_PRESETS.map(p => `
+            <div class="role-preset-btn" data-email="${p.email}" title="Click to fill credentials for ${p.title}">
+              <div class="role-preset-title">${p.title}</div>
+              <div class="role-preset-desc">${p.desc}</div>
+            </div>
+          `).join('')}
+        </div>
       </div>
 
-      <div class="role-preset-grid">
-        ${ROLE_PRESETS.map(p => `
-          <div class="role-preset-btn" data-email="${p.email}">
-            <div class="role-preset-title">${p.title}</div>
-            <div class="role-preset-desc">${p.desc}</div>
+      <form id="form-login" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Corporate Email Address</label>
+          <input type="email" id="login-email" class="form-input" required autocomplete="email" placeholder="name@organization.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <div style="position: relative;">
+            <input type="password" id="login-password" class="form-input" required autocomplete="current-password" placeholder="••••••••" />
+            <button type="button" id="btn-login-pwd-toggle" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem;" title="Toggle Password Visibility">👁️</button>
           </div>
-        `).join('')}
-      </div>
-
-      <form id="form-login" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem;">
-        <div class="form-group">
-          <label class="form-label">Email Address</label>
-          <input type="email" id="login-email" class="form-input" required value="storemanager@apex.com" />
         </div>
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" id="login-password" class="form-input" required value="Password123!" />
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+        <div id="login-error-msg" style="display: none; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); font-size: 0.82rem; background: rgba(239, 68, 68, 0.15); border: 1px solid var(--p1-critical); color: #fca5a5;"></div>
+        <button type="submit" id="btn-submit-login" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.65rem;">
+          Sign In to Cockpit
+        </button>
       </form>
     </div>
   `);
 
+  document.getElementById('btn-login-pwd-toggle')?.addEventListener('click', () => {
+    const pwdInput = document.getElementById('login-password');
+    if (pwdInput) {
+      pwdInput.type = pwdInput.type === 'password' ? 'text' : 'password';
+    }
+  });
+
   document.querySelectorAll('.role-preset-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', () => {
       const email = btn.getAttribute('data-email');
-      document.getElementById('login-email').value = email;
-      await autoLoginDemo(email);
+      const emailInput = document.getElementById('login-email');
+      const pwdInput = document.getElementById('login-password');
+      if (emailInput && pwdInput) {
+        emailInput.value = email;
+        pwdInput.value = 'Password123!';
+        showToast(`Filled credentials for ${email}`, 'info');
+      }
     });
   });
 
   document.getElementById('form-login').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = document.getElementById('login-email').value;
+    const btnSubmit = document.getElementById('btn-submit-login');
+    const errorMsg = document.getElementById('login-error-msg');
+    const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
+
+    btnSubmit.disabled = true;
+    btnSubmit.innerText = 'Authenticating...';
+    errorMsg.style.display = 'none';
+
     try {
       const res = await api.login(email, password);
       state.setAuth(res.token, res.user);
       await loadInitialData();
-      showToast('Logged in successfully.', 'success');
-    } catch {}
+      showToast(`Welcome back, ${res.user.fullName}!`, 'success');
+      closeModal();
+    } catch (err) {
+      errorMsg.style.display = 'block';
+      errorMsg.innerText = 'Authentication Failed: ' + (err.message || 'Invalid email or password');
+      btnSubmit.disabled = false;
+      btnSubmit.innerText = 'Sign In to Cockpit';
+    }
   });
 }
 
@@ -1621,8 +2114,15 @@ function openRoleSwitcherModal() {
   document.querySelectorAll('.role-preset-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       const email = btn.getAttribute('data-email');
-      await autoLoginDemo(email);
-      closeModal();
+      try {
+        const res = await api.login(email, 'Password123!');
+        state.setAuth(res.token, res.user);
+        await loadInitialData();
+        showToast(`Switched active persona to ${res.user.fullName} (${res.user.role})`, 'success');
+        closeModal();
+      } catch (err) {
+        showToast('Role switch failed: ' + err.message, 'error');
+      }
     });
   });
 }
@@ -2466,6 +2966,24 @@ function getPriorityColor(tier) {
   if (tier === 'P2_HIGH') return 'var(--p2-high)';
   if (tier === 'P3_MEDIUM') return 'var(--p3-medium)';
   return 'var(--p4-low)';
+}
+
+function getSlaCountdownHtml(item) {
+  if (item.status === 'CLOSED') {
+    return `<span class="sla-countdown-pill sla-resolved">✓ Closed</span>`;
+  }
+  if (!item.slaDeadline) {
+    return `<span class="sla-countdown-pill sla-normal">SLA: ${item.slaMinutes || 60}m</span>`;
+  }
+  const remainingMs = new Date(item.slaDeadline).getTime() - Date.now();
+  const remainingMins = Math.round(remainingMs / 60000);
+  if (remainingMins < 0) {
+    return `<span class="sla-countdown-pill sla-breached">⚠️ SLA Breached (${Math.abs(remainingMins)}m ago)</span>`;
+  }
+  if (remainingMins <= 30) {
+    return `<span class="sla-countdown-pill sla-warning">⏳ ${remainingMins}m remaining</span>`;
+  }
+  return `<span class="sla-countdown-pill sla-normal">⏱️ ${remainingMins}m remaining</span>`;
 }
 
 async function openRoutingModal(issueId) {

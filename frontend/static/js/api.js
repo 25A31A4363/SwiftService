@@ -109,6 +109,8 @@ export const api = {
   // Auth
   login: (email, password) => apiRequest('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
   getMe: () => apiRequest('/auth/me'),
+  updateProfile: (payload) => apiRequest('/auth/me', { method: 'PUT', body: JSON.stringify(payload) }),
+  changePassword: (payload) => apiRequest('/auth/change-password', { method: 'POST', body: JSON.stringify(payload) }),
   logout: () => apiRequest('/auth/logout', { method: 'POST' }),
 
   // Hierarchy - Organizations

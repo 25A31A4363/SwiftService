@@ -383,18 +383,76 @@ class MockBackend {
 
     // 1. Auth endpoints
     if (path === '/auth/login' && method === 'POST') {
-      const user = this.db.users.find(u => u.email.toLowerCase() === (body.email || '').toLowerCase()) || this.db.users[0];
+      const email = (body.email || '').toLowerCase().trim();
+      const password = body.password || '';
+      
+      const user = this.db.users.find(u => u.email.toLowerCase() === email);
+      if (!user) {
+        throw new Error('Invalid email or password');
+      }
+
+      if (!user.isActive) {
+        throw new Error('User account is inactive. Please contact your organization administrator.');
+      }
+
+      // Check stored password if set, otherwise accept valid password (>= 6 chars)
+      if (user.password && user.password !== password) {
+        throw new Error('Invalid email or password');
+      }
+
+      this.currentAuthUserId = user.id;
+      user.lastLoginAt = new Date().toISOString();
+      this.saveDatabase();
+
       return {
         token: 'mock-jwt-token-' + user.id,
-        user: { ...user }
+        user: { ...user },
+        expiresIn: '1440m'
       };
     }
 
     if (path === '/auth/me') {
-      return this.db.users[0];
+      const user = this.db.users.find(u => u.id === this.currentAuthUserId) || this.db.users[0];
+      return { ...user };
+    }
+
+    if ((path === '/auth/me' || path === '/auth/profile') && method === 'PUT') {
+      const user = this.db.users.find(u => u.id === this.currentAuthUserId) || this.db.users[0];
+      if (body.email) {
+        const cleanEmail = body.email.toLowerCase().trim();
+        const exists = this.db.users.find(u => u.email.toLowerCase() === cleanEmail && u.id !== user.id);
+        if (exists) {
+          throw new Error(`Email '${cleanEmail}' is already assigned to another account`);
+        }
+        user.email = cleanEmail;
+      }
+      if (body.fullName) {
+        user.fullName = body.fullName.trim();
+      }
+      user.updatedAt = new Date().toISOString();
+      this.saveDatabase();
+      return { ...user };
+    }
+
+    if (path === '/auth/change-password' && method === 'POST') {
+      const user = this.db.users.find(u => u.id === this.currentAuthUserId) || this.db.users[0];
+      if (!body.currentPassword) {
+        throw new Error('Current password is required');
+      }
+      if (user.password && user.password !== body.currentPassword) {
+        throw new Error('Current password is incorrect');
+      }
+      if (!body.newPassword || body.newPassword.length < 8) {
+        throw new Error('New password must be at least 8 characters long');
+      }
+      user.password = body.newPassword;
+      user.updatedAt = new Date().toISOString();
+      this.saveDatabase();
+      return { message: 'Password changed successfully. Please authenticate with your new credentials on future logins.' };
     }
 
     if (path === '/auth/logout') {
+      this.currentAuthUserId = null;
       return { message: 'Logged out successfully.' };
     }
 
@@ -751,6 +809,28 @@ class MockBackend {
     // 13. Users, Roles & Matrix
     if (path === '/users') {
       return this.db.users;
+    }
+
+    if (path.startsWith('/users/') && (method === 'PUT' || method === 'PATCH')) {
+      const id = path.split('/')[2];
+      const user = this.db.users.find(u => u.id === id);
+      if (!user) throw new Error('User not found');
+      if (body.email) {
+        const cleanEmail = body.email.toLowerCase().trim();
+        const exists = this.db.users.find(u => u.email.toLowerCase() === cleanEmail && u.id !== id);
+        if (exists) throw new Error(`Email '${cleanEmail}' is already assigned to another account`);
+        user.email = cleanEmail;
+      }
+      if (body.fullName) user.fullName = body.fullName.trim();
+      if (body.role) user.role = body.role;
+      if (body.storeId !== undefined) user.storeId = body.storeId;
+      if (body.regionId !== undefined) user.regionId = body.regionId;
+      if (body.teamId !== undefined) user.teamId = body.teamId;
+      if (body.isActive !== undefined) user.isActive = body.isActive;
+      if (body.password) user.password = body.password;
+      user.updatedAt = new Date().toISOString();
+      this.saveDatabase();
+      return { ...user };
     }
 
     if (path.startsWith('/users/')) {
