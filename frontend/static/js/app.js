@@ -16,6 +16,7 @@ import { renderFeedbackView, openSubmitFeedbackModal } from './feedback-view.js'
 import { renderOutcomesView } from './outcomes-view.js';
 import { renderBriefsView } from './briefs-view.js';
 import { renderDemoView } from './demo-view.js';
+import { renderCustomerPortal, renderCustomerComplaintsView } from './customer-portal.js';
 
 // DOM Elements
 const elApp = document.getElementById('app');
@@ -94,6 +95,13 @@ async function loadInitialData() {
 }
 
 function render() {
+  // If in CUSTOMER mode or user is a registered customer, render the RetailWave Customer Portal
+  if (state.currentPortalMode === 'CUSTOMER' || (state.user && state.user.role === 'CUSTOMER')) {
+    closeModal();
+    renderCustomerPortal(elApp);
+    return;
+  }
+
   if (!state.token || !state.user) {
     renderLoginModal();
     return;
@@ -195,6 +203,11 @@ function render() {
         </div>
 
         <div class="topbar-actions-group">
+          <!-- Customer Portal Switcher -->
+          <button id="btn-topbar-customer-portal" class="btn btn-secondary btn-sm" title="Open RetailWave Customer Care Portal" style="font-weight: 600; color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); display: inline-flex; align-items: center; gap: 0.35rem;">
+            🛍️ Customer Portal
+          </button>
+
           <!-- Theme Toggle (Dark / Light Enterprise Mode) -->
           <button id="btn-theme-toggle" class="btn btn-secondary btn-sm" title="Toggle Light/Dark Theme" aria-label="Toggle theme mode" style="padding: 0.35rem 0.65rem; font-size: 0.95rem;">
             🌓
@@ -283,6 +296,15 @@ function attachGlobalEvents() {
     btnTopbarDemo.addEventListener('click', () => {
       closeSidebarMobile();
       state.setView('demo');
+    });
+  }
+
+  // Switch to Customer Portal Mode
+  const btnCustomerPortal = document.getElementById('btn-topbar-customer-portal');
+  if (btnCustomerPortal) {
+    btnCustomerPortal.addEventListener('click', () => {
+      closeSidebarMobile();
+      state.setPortalMode('CUSTOMER');
     });
   }
 
@@ -455,6 +477,9 @@ async function renderActiveView() {
       break;
     case 'personal-home':
       await renderPersonalHomeView(ws);
+      break;
+    case 'customer-complaints':
+      await renderCustomerComplaintsView(ws);
       break;
     default:
       ws.innerHTML = `<div class="r5-card"><div class="r5-card-body">View "${state.currentView}" under construction.</div></div>`;
@@ -2036,9 +2061,17 @@ function renderLoginModal() {
         <button type="submit" id="btn-submit-login" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.65rem;">
           Sign In to Cockpit
         </button>
+        <button type="button" id="btn-login-to-customer" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center; margin-top: 0.65rem;">
+          🛍️ Return to Customer Complaint Portal
+        </button>
       </form>
     </div>
   `);
+
+  document.getElementById('btn-login-to-customer')?.addEventListener('click', () => {
+    state.setPortalMode('CUSTOMER');
+    closeModal();
+  });
 
   document.getElementById('btn-login-pwd-toggle')?.addEventListener('click', () => {
     const pwdInput = document.getElementById('login-password');
@@ -2073,8 +2106,15 @@ function renderLoginModal() {
 
     try {
       const res = await api.login(email, password);
+      if (res.user.role === 'CUSTOMER') {
+        state.setPortalMode('CUSTOMER');
+      } else {
+        state.setPortalMode('OPS');
+      }
       state.setAuth(res.token, res.user);
-      await loadInitialData();
+      if (res.user.role !== 'CUSTOMER') {
+        await loadInitialData();
+      }
       showToast(`Welcome back, ${res.user.fullName}!`, 'success');
       closeModal();
     } catch (err) {

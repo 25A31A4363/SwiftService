@@ -22,6 +22,15 @@ class AppError(Exception):
         self.status_code = status_code
         self.details = details
 
+class BadRequestError(AppError):
+    def __init__(self, message: str = "Bad request", details: Optional[Any] = None):
+        super().__init__(
+            message=message,
+            code="BAD_REQUEST",
+            status_code=status.HTTP_400_BAD_REQUEST,
+            details=details
+        )
+
 class NotFoundError(AppError):
     def __init__(self, resource: str, identifier: str):
         super().__init__(

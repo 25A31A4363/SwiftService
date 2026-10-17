@@ -447,6 +447,54 @@ export const api = {
   getDemoStatus: () => apiRequest('/demo/status'),
   resetDemo: () => apiRequest('/demo/reset', {
     method: 'POST'
-  })
+  }),
+
+  // Customer Authentication & Email Verification
+  registerCustomer: (payload) => apiRequest('/auth/customer/register', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+  verifyCustomerOtp: (payload) => apiRequest('/auth/customer/verify-otp', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+  resendCustomerOtp: (payload) => apiRequest('/auth/customer/resend-otp', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+
+  // Customer Complaints & Public Tracking
+  submitComplaint: (payload) => apiRequest('/complaints', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+  getMyComplaints: () => apiRequest('/complaints/my'),
+  trackComplaint: (referenceNumber) => apiRequest(`/complaints/track/${encodeURIComponent(referenceNumber)}`),
+  getComplaintById: (id) => apiRequest(`/complaints/${id}`),
+  listComplaints: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return apiRequest(`/complaints${qs ? `?${qs}` : ''}`);
+  },
+  updateComplaintStatus: (id, payload) => apiRequest(`/complaints/${id}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload)
+  }),
+  uploadComplaintAttachment: async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (forceMockBackend) {
+      return await mockBackend.handleRequest('/complaints/upload', { method: 'POST', body: formData });
+    }
+    const headers = {};
+    if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
+    const res = await fetch(`${API_BASE}/complaints/upload`, {
+      method: 'POST',
+      headers,
+      body: formData
+    });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.error?.message || 'File upload failed');
+    return json.data;
+  }
 };
 

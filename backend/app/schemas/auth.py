@@ -39,6 +39,8 @@ class UserResponse(BaseModel):
     teamId: Optional[str] = None
     teamName: Optional[str] = None
     isActive: bool
+    isVerified: Optional[bool] = True
+    phone: Optional[str] = None
     lastLoginAt: Optional[str] = None
     createdAt: str
     updatedAt: str
@@ -51,6 +53,7 @@ class LoginResponse(BaseModel):
 class ProfileUpdateRequest(BaseModel):
     fullName: Optional[str] = Field(None, min_length=2, max_length=120)
     email: Optional[str] = Field(None, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+    phone: Optional[str] = Field(None, max_length=25)
 
 class ChangePasswordRequest(BaseModel):
     currentPassword: str = Field(..., min_length=1, description="Existing account password for verification")

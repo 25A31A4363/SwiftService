@@ -19,7 +19,8 @@ function createInitialDatabase() {
       { id: 'usr-reg', email: 'regmanager@apex.com', fullName: 'Sarah Chen', role: 'REGIONAL_MANAGER', storeId: null, regionId: 'reg-pnw-01', organizationId: 'org-apex-01', isActive: true },
       { id: 'usr-maint', email: 'maintenance@apex.com', fullName: 'Carlos Gomez', role: 'MAINTENANCE_TEAM', storeId: 'store-104', regionId: 'reg-pnw-01', organizationId: 'org-apex-01', isActive: true },
       { id: 'usr-analyst', email: 'analyst@apex.com', fullName: 'Priya Sharma', role: 'ANALYST', storeId: null, regionId: null, organizationId: 'org-apex-01', isActive: true },
-      { id: 'usr-viewer', email: 'viewer@apex.com', fullName: 'Alex Reed', role: 'VIEWER', storeId: 'store-104', regionId: 'reg-pnw-01', organizationId: 'org-apex-01', isActive: true }
+      { id: 'usr-viewer', email: 'viewer@apex.com', fullName: 'Alex Reed', role: 'VIEWER', storeId: 'store-104', regionId: 'reg-pnw-01', organizationId: 'org-apex-01', isActive: true },
+      { id: 'usr-cust-01', email: 'customer@retailwave.com', fullName: 'Sarah Jenkins', role: 'CUSTOMER', storeId: 'store-104', regionId: 'reg-pnw-01', organizationId: 'org-apex-01', isActive: true, isVerified: true, phone: '+1-555-019-2834' }
     ],
     organizations: [
       { id: 'org-apex-01', name: 'Apex Retail International', code: 'APEX', description: 'Global omnichannel retail enterprise operating multi-tier physical supercenters and urban metro locations.', status: 'ACTIVE' }
@@ -334,7 +335,102 @@ function createInitialDatabase() {
           }
         ]
       }
-    }
+    },
+    complaints: [
+      {
+        id: 'cmp-seed-01',
+        referenceNumber: 'REF-2026-A8K92',
+        customerId: 'usr-cust-01',
+        customerName: 'Sarah Jenkins',
+        customerEmail: 'customer@retailwave.com',
+        customerPhone: '+1-555-019-2834',
+        category: 'Product Issues',
+        orderNumber: 'ORD-84920',
+        storeId: 'store-104',
+        storeName: 'Apex Supercenter - Seattle Downtown',
+        subject: 'Damaged organic dairy cartons leaking in aisle 4',
+        description: 'I purchased 3 cartons of organic whole milk today and two of them were split at the bottom seal, spoiling my grocery bag. The dairy cooler rack was also leaking onto the floor.',
+        attachmentUrl: '/static/uploads/complaints/dairy_cooler_leak.jpg',
+        attachmentName: 'dairy_cooler_leak.jpg',
+        status: 'IN_PROGRESS',
+        priority: 'HIGH',
+        assignedTeamId: 'team-hvac-pnw',
+        assignedTeamName: 'Regional Commercial HVAC & Refrigeration',
+        assignedToUserId: 'usr-maint',
+        assignedToName: 'Carlos Gomez',
+        investigationNotes: 'Inspected reach-in cooler 4B. Temperature sensor was reading +8F above threshold. Dispatching HVAC technician Carlos Gomez for valve replacement.',
+        resolutionSummary: null,
+        feedbackItemId: 'fb-demo-001',
+        timeline: [
+          { status: 'SUBMITTED', timestamp: pastDay, actor: 'Sarah Jenkins', note: 'Complaint submitted via RetailWave Customer Portal.' },
+          { status: 'UNDER_REVIEW', timestamp: pastDay, actor: 'David Miller', note: 'Assigned to Regional HVAC & Refrigeration team.' },
+          { status: 'IN_PROGRESS', timestamp: pastHour, actor: 'Carlos Gomez', note: 'Technician on site inspecting cooler pressure lines.' }
+        ],
+        createdAt: pastDay,
+        updatedAt: pastHour
+      },
+      {
+        id: 'cmp-seed-02',
+        referenceNumber: 'REF-2026-F4N18',
+        customerId: 'usr-cust-01',
+        customerName: 'Sarah Jenkins',
+        customerEmail: 'customer@retailwave.com',
+        customerPhone: '+1-555-019-2834',
+        category: 'Returns and Refunds',
+        orderNumber: 'ORD-77312',
+        storeId: 'store-104',
+        storeName: 'Apex Supercenter - Seattle Downtown',
+        subject: 'Overcharged on electronic scanner lane #3',
+        description: 'The self-checkout scanner registered two items for organic apples instead of one. The cashier gave me an apology slip but the card charge was not refunded.',
+        attachmentUrl: null,
+        attachmentName: null,
+        status: 'RESOLVED',
+        priority: 'MEDIUM',
+        assignedTeamId: 'team-it-na',
+        assignedTeamName: 'Regional IT & POS Systems',
+        assignedToUserId: 'usr-store',
+        assignedToName: 'David Miller',
+        investigationNotes: 'Scanner lane 3 sensitivity recalibrated. Card refund issued.',
+        resolutionSummary: 'Your refund of $14.50 has been processed to your original payment method. Self-checkout terminal sensitivity has been re-calibrated.',
+        feedbackItemId: 'fb-demo-002',
+        timeline: [
+          { status: 'SUBMITTED', timestamp: pastDay, actor: 'Sarah Jenkins', note: 'Complaint submitted via Customer Portal.' },
+          { status: 'RESOLVED', timestamp: pastHour, actor: 'David Miller', note: 'Refund of $14.50 processed to customer card.' }
+        ],
+        createdAt: pastDay,
+        updatedAt: pastHour
+      },
+      {
+        id: 'cmp-seed-03',
+        referenceNumber: 'REF-2026-M7T34',
+        customerId: 'usr-cust-01',
+        customerName: 'Sarah Jenkins',
+        customerEmail: 'customer@retailwave.com',
+        customerPhone: '+1-555-019-2834',
+        category: 'Delivery',
+        orderNumber: 'ORD-92011',
+        storeId: 'store-104',
+        storeName: 'Apex Supercenter - Seattle Downtown',
+        subject: 'Curbside delivery missing items',
+        description: 'Ordered 12 items for curbside pickup at 2 PM. Two containers of Greek yogurt and one loaf of artisan sourdough were missing from the trunk loading.',
+        attachmentUrl: null,
+        attachmentName: null,
+        status: 'SUBMITTED',
+        priority: 'MEDIUM',
+        assignedTeamId: null,
+        assignedTeamName: null,
+        assignedToUserId: null,
+        assignedToName: null,
+        investigationNotes: null,
+        resolutionSummary: null,
+        feedbackItemId: 'fb-demo-003',
+        timeline: [
+          { status: 'SUBMITTED', timestamp: pastHour, actor: 'Sarah Jenkins', note: 'Complaint submitted via RetailWave Customer Portal.' }
+        ],
+        createdAt: pastHour,
+        updatedAt: pastHour
+      }
+    ]
   };
 }
 
@@ -347,7 +443,17 @@ class MockBackend {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        if (!parsed.complaints || parsed.complaints.length === 0) {
+          const fresh = createInitialDatabase();
+          parsed.complaints = fresh.complaints;
+          if (!parsed.users.some(u => u.role === 'CUSTOMER')) {
+            const cust = fresh.users.find(u => u.role === 'CUSTOMER');
+            if (cust) parsed.users.push(cust);
+          }
+          this.saveDatabase(parsed);
+        }
+        return parsed;
       }
     } catch {
       // ignore
@@ -454,6 +560,224 @@ class MockBackend {
     if (path === '/auth/logout') {
       this.currentAuthUserId = null;
       return { message: 'Logged out successfully.' };
+    }
+
+    // Customer Authentication & Email Verification
+    if (path === '/auth/customer/register' && method === 'POST') {
+      const cleanEmail = (body.email || '').toLowerCase().trim();
+      let user = this.db.users.find(u => u.email.toLowerCase() === cleanEmail);
+      if (user && user.isVerified) {
+        throw new Error('An account with this email address already exists. Please log in.');
+      }
+      if (!user) {
+        user = {
+          id: 'usr-cust-' + Math.random().toString(36).substr(2, 9),
+          email: cleanEmail,
+          fullName: body.fullName,
+          phone: body.phone || null,
+          role: 'CUSTOMER',
+          storeId: 'store-104',
+          regionId: 'reg-pnw-01',
+          organizationId: 'org-apex-01',
+          isActive: true,
+          isVerified: false
+        };
+        this.db.users.push(user);
+      } else {
+        user.fullName = body.fullName;
+        user.phone = body.phone || user.phone;
+      }
+      const devOtp = String(Math.floor(100000 + Math.random() * 900000));
+      user.pendingOtp = devOtp;
+      user.pendingOtpExpires = Date.now() + 600000;
+      this.saveDatabase();
+      return {
+        message: 'Account created. A 6-digit verification code has been dispatched to your email.',
+        email: cleanEmail,
+        isVerified: false,
+        expiresInMinutes: 10,
+        emailDelivery: {
+          provider: 'SMTP',
+          status: 'SANDBOX',
+          notice: 'In local sandbox mode, enter verification code: ' + devOtp
+        },
+        devOtpCode: devOtp
+      };
+    }
+
+    if (path === '/auth/customer/verify-otp' && method === 'POST') {
+      const cleanEmail = (body.email || '').toLowerCase().trim();
+      const user = this.db.users.find(u => u.email.toLowerCase() === cleanEmail);
+      if (!user) throw new Error('Customer account not found.');
+      if (user.pendingOtp && user.pendingOtp !== body.otp && body.otp !== '123456') {
+        throw new Error('Incorrect verification code. Please check your email.');
+      }
+      user.isVerified = true;
+      delete user.pendingOtp;
+      delete user.pendingOtpExpires;
+      this.currentAuthUserId = user.id;
+      user.lastLoginAt = new Date().toISOString();
+      this.saveDatabase();
+      return {
+        token: 'mock-jwt-token-' + user.id,
+        user: { ...user },
+        expiresIn: '1440m',
+        message: 'Email verified successfully! Welcome to RetailWave.'
+      };
+    }
+
+    if (path === '/auth/customer/resend-otp' && method === 'POST') {
+      const cleanEmail = (body.email || '').toLowerCase().trim();
+      const user = this.db.users.find(u => u.email.toLowerCase() === cleanEmail);
+      if (!user) throw new Error('Customer account not found.');
+      if (user.isVerified) throw new Error('This account is already verified. Please log in.');
+      const devOtp = String(Math.floor(100000 + Math.random() * 900000));
+      user.pendingOtp = devOtp;
+      this.saveDatabase();
+      return {
+        message: 'A fresh verification code has been dispatched to your email.',
+        email: cleanEmail,
+        expiresInMinutes: 10,
+        emailDelivery: { provider: 'SMTP', status: 'SANDBOX' },
+        devOtpCode: devOtp
+      };
+    }
+
+    // Customer Complaints Endpoints
+    if (path === '/complaints' && method === 'POST') {
+      const user = this.db.users.find(u => u.id === this.currentAuthUserId) || this.db.users[0];
+      const now = new Date().toISOString();
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let ref = 'REF-2026-';
+      for (let i = 0; i < 5; i++) ref += chars.charAt(Math.floor(Math.random() * chars.length));
+
+      const newComplaint = {
+        id: 'cmp-' + Math.random().toString(36).substr(2, 9),
+        referenceNumber: ref,
+        customerId: user.id,
+        customerName: user.fullName,
+        customerEmail: user.email,
+        customerPhone: user.phone || null,
+        category: body.category,
+        orderNumber: body.orderNumber || null,
+        storeId: body.storeId || user.storeId || 'store-104',
+        storeName: 'Apex Supercenter - Seattle Downtown',
+        subject: body.subject,
+        description: body.description,
+        attachmentUrl: body.attachmentUrl || null,
+        attachmentName: body.attachmentName || null,
+        status: 'SUBMITTED',
+        priority: (body.description + ' ' + body.subject).toLowerCase().includes('safety') ? 'HIGH' : 'MEDIUM',
+        assignedTeamId: null,
+        assignedTeamName: null,
+        assignedToUserId: null,
+        assignedToName: null,
+        investigationNotes: null,
+        resolutionSummary: null,
+        feedbackItemId: 'fb-cmp-' + Math.random().toString(36).substr(2, 7),
+        timeline: [
+          { status: 'SUBMITTED', timestamp: now, actor: user.fullName || 'Customer', note: 'Complaint submitted via RetailWave Customer Portal.' }
+        ],
+        createdAt: now,
+        updatedAt: now
+      };
+
+      this.db.complaints = this.db.complaints || [];
+      this.db.complaints.unshift(newComplaint);
+      this.saveDatabase();
+      return newComplaint;
+    }
+
+    if (path === '/complaints/my' && method === 'GET') {
+      const user = this.db.users.find(u => u.id === this.currentAuthUserId) || this.db.users[0];
+      this.db.complaints = this.db.complaints || [];
+      return this.db.complaints.filter(c => c.customerId === user.id || user.role !== 'CUSTOMER');
+    }
+
+    if (path.startsWith('/complaints/track/')) {
+      const ref = decodeURIComponent(path.split('/')[3] || '').trim().toUpperCase();
+      this.db.complaints = this.db.complaints || [];
+      const c = this.db.complaints.find(x => x.referenceNumber.toUpperCase() === ref);
+      if (!c) throw new Error(`Complaint reference '${ref}' not found.`);
+      return {
+        id: c.id,
+        referenceNumber: c.referenceNumber,
+        customerName: c.customerName,
+        category: c.category,
+        orderNumber: c.orderNumber,
+        storeName: c.storeName,
+        subject: c.subject,
+        description: c.description,
+        attachmentName: c.attachmentName,
+        status: c.status,
+        priority: c.priority,
+        assignedTeamName: c.assignedTeamName,
+        resolutionSummary: c.resolutionSummary,
+        timeline: c.timeline,
+        createdAt: c.createdAt,
+        updatedAt: c.updatedAt
+      };
+    }
+
+    if (path === '/complaints' && method === 'GET') {
+      this.db.complaints = this.db.complaints || [];
+      let items = [...this.db.complaints];
+      const statusFilter = searchParams.get('status');
+      const categoryFilter = searchParams.get('category');
+      const search = searchParams.get('search');
+      if (statusFilter && statusFilter !== 'ALL') items = items.filter(c => c.status === statusFilter);
+      if (categoryFilter && categoryFilter !== 'ALL') items = items.filter(c => c.category === categoryFilter);
+      if (search) {
+        const s = search.toLowerCase();
+        items = items.filter(c => c.referenceNumber.toLowerCase().includes(s) || c.subject.toLowerCase().includes(s) || c.customerName.toLowerCase().includes(s));
+      }
+      return { items, total: items.length };
+    }
+
+    if (path.startsWith('/complaints/') && path.endsWith('/status') && method === 'PATCH') {
+      const id = path.split('/')[2];
+      this.db.complaints = this.db.complaints || [];
+      const c = this.db.complaints.find(x => x.id === id);
+      if (!c) throw new Error('Complaint not found');
+      const user = this.db.users.find(u => u.id === this.currentAuthUserId) || this.db.users[0];
+      const now = new Date().toISOString();
+      const oldStatus = c.status;
+      const newStatus = body.status || oldStatus;
+      c.status = newStatus;
+      if (body.assignedTeamId) {
+        c.assignedTeamId = body.assignedTeamId;
+        const team = (this.db.teams || []).find(t => t.id === body.assignedTeamId);
+        if (team) c.assignedTeamName = team.name;
+      }
+      if (body.investigationNotes !== undefined) c.investigationNotes = body.investigationNotes;
+      if (body.resolutionSummary !== undefined) c.resolutionSummary = body.resolutionSummary;
+      if (newStatus !== oldStatus || body.resolutionSummary) {
+        c.timeline = c.timeline || [];
+        c.timeline.push({
+          status: newStatus,
+          timestamp: now,
+          actor: user.fullName || 'Operations Staff',
+          note: body.resolutionSummary || `Status transitioned from ${oldStatus} to ${newStatus}.`
+        });
+      }
+      c.updatedAt = now;
+      this.saveDatabase();
+      return c;
+    }
+
+    if (path.startsWith('/complaints/') && method === 'GET') {
+      const id = path.split('/')[2];
+      this.db.complaints = this.db.complaints || [];
+      const c = this.db.complaints.find(x => x.id === id);
+      if (!c) throw new Error('Complaint not found');
+      return c;
+    }
+
+    if (path === '/complaints/upload' && method === 'POST') {
+      return {
+        url: '/static/uploads/complaints/attachment_demo.jpg',
+        filename: 'attachment_demo.jpg'
+      };
     }
 
     // 2. Hierarchy endpoints

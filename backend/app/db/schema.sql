@@ -106,6 +106,8 @@ CREATE TABLE IF NOT EXISTS users (
     full_name TEXT NOT NULL,
     role TEXT NOT NULL,
     is_active INTEGER NOT NULL DEFAULT 1,
+    is_verified INTEGER NOT NULL DEFAULT 1,
+    phone TEXT,
     last_login_at TEXT,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
@@ -585,6 +587,51 @@ CREATE TABLE IF NOT EXISTS background_jobs (
     updated_at TEXT NOT NULL
 );
 
+-- 25. Email Verification OTPs (Customer Auth & Security)
+CREATE TABLE IF NOT EXISTS email_verification_otps (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    email TEXT NOT NULL,
+    otp_code_hash TEXT NOT NULL,
+    purpose TEXT NOT NULL DEFAULT 'REGISTRATION',
+    expires_at TEXT NOT NULL,
+    attempts INTEGER NOT NULL DEFAULT 0,
+    max_attempts INTEGER NOT NULL DEFAULT 5,
+    is_used INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL
+);
+
+-- 26. Customer Complaints (Retail Support & Closed-Loop Operations)
+CREATE TABLE IF NOT EXISTS customer_complaints (
+    id TEXT PRIMARY KEY,
+    reference_number TEXT UNIQUE NOT NULL,
+    customer_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    customer_name TEXT NOT NULL,
+    customer_email TEXT NOT NULL,
+    customer_phone TEXT,
+    category TEXT NOT NULL,
+    order_number TEXT,
+    store_id TEXT REFERENCES stores(id) ON DELETE SET NULL,
+    store_name TEXT,
+    subject TEXT NOT NULL,
+    description TEXT NOT NULL,
+    attachment_url TEXT,
+    attachment_name TEXT,
+    status TEXT NOT NULL DEFAULT 'SUBMITTED',
+    priority TEXT NOT NULL DEFAULT 'MEDIUM',
+    assigned_team_id TEXT REFERENCES operational_teams(id) ON DELETE SET NULL,
+    assigned_team_name TEXT,
+    assigned_to_user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+    assigned_to_name TEXT,
+    investigation_notes TEXT,
+    resolution_summary TEXT,
+    feedback_item_id TEXT REFERENCES feedback_items(id) ON DELETE SET NULL,
+    issue_id TEXT REFERENCES issues(id) ON DELETE SET NULL,
+    timeline TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+
 -- Performance Indexes
 CREATE INDEX IF NOT EXISTS idx_retention_org ON data_retention_policies(organization_id, entity_type);
 CREATE INDEX IF NOT EXISTS idx_governance_org ON ai_governance_logs(organization_id, created_at DESC);
@@ -639,4 +686,10 @@ CREATE INDEX IF NOT EXISTS idx_jobs_type ON background_jobs(job_type);
 CREATE INDEX IF NOT EXISTS idx_idempotency_expires ON idempotency_keys(expires_at);
 CREATE INDEX IF NOT EXISTS idx_ai_logs_req ON ai_governance_logs(request_id);
 CREATE INDEX IF NOT EXISTS idx_ai_logs_status ON ai_governance_logs(status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_customer_complaints_cust ON customer_complaints(customer_id);
+CREATE INDEX IF NOT EXISTS idx_customer_complaints_ref ON customer_complaints(reference_number);
+CREATE INDEX IF NOT EXISTS idx_customer_complaints_status ON customer_complaints(status);
+CREATE INDEX IF NOT EXISTS idx_customer_complaints_store ON customer_complaints(store_id);
+CREATE INDEX IF NOT EXISTS idx_email_otps_email ON email_verification_otps(email);
+CREATE INDEX IF NOT EXISTS idx_email_otps_user ON email_verification_otps(user_id);
 

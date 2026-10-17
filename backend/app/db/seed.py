@@ -21,6 +21,7 @@ def seed_database(force: bool = False) -> None:
         if force:
             logger.info("Force flag enabled: purging existing tables for clean seed...")
             tables = [
+                "customer_complaints", "email_verification_otps",
                 "operational_briefs", "outcome_measurements", "personal_service_tickets", "personal_home_appliances", "audit_logs",
                 "evidence", "resolutions", "action_plans", "alerts", "issue_feedback_links",
                 "issues", "follow_up_exchanges", "feedback_items", "operational_ownership_mappings",
@@ -51,6 +52,7 @@ def seed_database(force: bool = False) -> None:
             ("role-maint", Role.MAINTENANCE_TEAM.value, "Field Technician / Specialized Engineer executing physical work orders, preventative maintenance, and incident repairs.", 1),
             ("role-analyst", Role.ANALYST.value, "Operational Intelligence Analyst conducting root-cause investigations, anomaly detection audits, and SLA reporting.", 1),
             ("role-viewer", Role.VIEWER.value, "Store Auditor / Stakeholder with read-only visibility into operational dashboards, reports, and incident states.", 1),
+            ("role-customer", Role.CUSTOMER.value, "Retail customer submitting complaints, attaching evidence, and tracking resolution status.", 1),
         ]
         cur.executemany("""
             INSERT OR REPLACE INTO roles (id, name, description, is_system, created_at, updated_at)
@@ -207,20 +209,22 @@ def seed_database(force: bool = False) -> None:
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, teams_data)
 
-        # 7. Users across all 7 RBAC roles (Default password: "Password123!")
+        # 7. Users across RBAC roles & Customers (Default password: "Password123!")
         default_pwd_hash = hash_password("Password123!")
         users_data = [
-            ("usr-admin", org_id, None, None, None, "orgadmin@apex.com", default_pwd_hash, "Eleanor Vance (Org Admin)", "ORGANIZATION_ADMIN", 1, now, now),
-            ("usr-ops", org_id, None, None, None, "opsmanager@apex.com", default_pwd_hash, "Marcus Sterling (Ops Manager)", "OPERATIONS_MANAGER", 1, now, now),
-            ("usr-reg", org_id, None, reg_pnw, None, "regmanager@apex.com", default_pwd_hash, "Sarah Chen (Regional VP PNW)", "REGIONAL_MANAGER", 1, now, now),
-            ("usr-store", org_id, store_104, reg_pnw, None, "storemanager@apex.com", default_pwd_hash, "David Miller (Store 104 Lead)", "STORE_MANAGER", 1, now, now),
-            ("usr-maint", org_id, store_104, reg_pnw, team_hvac, "maintenance@apex.com", default_pwd_hash, "Carlos Gomez (Senior HVAC Tech)", "MAINTENANCE_TEAM", 1, now, now),
-            ("usr-analyst", org_id, None, None, None, "analyst@apex.com", default_pwd_hash, "Priya Sharma (Operations Analyst)", "ANALYST", 1, now, now),
-            ("usr-viewer", org_id, store_104, reg_pnw, None, "viewer@apex.com", default_pwd_hash, "Alex Reed (Store Auditor)", "VIEWER", 1, now, now),
+            ("usr-admin", org_id, None, None, None, "orgadmin@apex.com", default_pwd_hash, "Eleanor Vance (Org Admin)", "ORGANIZATION_ADMIN", 1, 1, "+1-555-010-0001", now, now),
+            ("usr-ops", org_id, None, None, None, "opsmanager@apex.com", default_pwd_hash, "Marcus Sterling (Ops Manager)", "OPERATIONS_MANAGER", 1, 1, "+1-555-010-0002", now, now),
+            ("usr-reg", org_id, None, reg_pnw, None, "regmanager@apex.com", default_pwd_hash, "Sarah Chen (Regional VP PNW)", "REGIONAL_MANAGER", 1, 1, "+1-555-010-0003", now, now),
+            ("usr-store", org_id, store_104, reg_pnw, None, "storemanager@apex.com", default_pwd_hash, "David Miller (Store 104 Lead)", "STORE_MANAGER", 1, 1, "+1-555-010-0004", now, now),
+            ("usr-maint", org_id, store_104, reg_pnw, team_hvac, "maintenance@apex.com", default_pwd_hash, "Carlos Gomez (Senior HVAC Tech)", "MAINTENANCE_TEAM", 1, 1, "+1-555-010-0005", now, now),
+            ("usr-analyst", org_id, None, None, None, "analyst@apex.com", default_pwd_hash, "Priya Sharma (Operations Analyst)", "ANALYST", 1, 1, "+1-555-010-0006", now, now),
+            ("usr-viewer", org_id, store_104, reg_pnw, None, "viewer@apex.com", default_pwd_hash, "Alex Reed (Store Auditor)", "VIEWER", 1, 1, "+1-555-010-0007", now, now),
+            ("usr-cust-01", org_id, store_104, reg_pnw, None, "customer@retailwave.com", default_pwd_hash, "Sarah Jenkins (Customer)", "CUSTOMER", 1, 1, "+1-555-019-2834", now, now),
+            ("usr-cust-02", org_id, store_104, reg_pnw, None, "pending.customer@example.com", default_pwd_hash, "David Ross (Pending Verification)", "CUSTOMER", 1, 0, "+1-555-019-9944", now, now),
         ]
         cur.executemany("""
-            INSERT OR REPLACE INTO users (id, organization_id, store_id, region_id, team_id, email, password_hash, full_name, role, is_active, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO users (id, organization_id, store_id, region_id, team_id, email, password_hash, full_name, role, is_active, is_verified, phone, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, users_data)
 
         # Update region and team leads now that users exist
@@ -617,6 +621,81 @@ def seed_database(force: bool = False) -> None:
             path="/system/init",
             details={"status": "ACTIVE", "policiesLoaded": 4}
         )
+
+        # 19. Seed Customer Complaints & Linked Unified Operational Feedback
+        cmp_timeline_01 = json.dumps([
+            {"status": "SUBMITTED", "timestamp": two_days_ago, "actor": "Sarah Jenkins", "note": "Complaint submitted via RetailWave Customer Portal."},
+            {"status": "UNDER_REVIEW", "timestamp": yesterday, "actor": "David Miller (Store Lead)", "note": "Assigned to Regional HVAC & Refrigeration team for cold chain inspection."},
+            {"status": "IN_PROGRESS", "timestamp": two_hours_ago, "actor": "Carlos Gomez (HVAC Tech)", "note": "Technician on site inspecting cooler pressure lines and valve seating."}
+        ])
+        cmp_timeline_02 = json.dumps([
+            {"status": "SUBMITTED", "timestamp": three_days_ago, "actor": "Sarah Jenkins", "note": "Complaint submitted via RetailWave Customer Portal."},
+            {"status": "UNDER_REVIEW", "timestamp": two_days_ago, "actor": "David Miller", "note": "Reviewing checkout transaction logs and register sensitivity."},
+            {"status": "RESOLVED", "timestamp": yesterday, "actor": "David Miller", "note": "Refund of $14.50 processed to customer card ending in 4012."}
+        ])
+        cmp_timeline_03 = json.dumps([
+            {"status": "SUBMITTED", "timestamp": thirty_mins_ago, "actor": "Sarah Jenkins", "note": "Complaint submitted via RetailWave Customer Portal."}
+        ])
+
+        # Link feedback items for unified R5 operational clustering & intelligence
+        cur.execute("""
+            INSERT OR REPLACE INTO feedback_items (
+                id, organization_id, region_id, store_id, source_type, channel_type,
+                submitter_type, privacy_classification, processing_status, status,
+                raw_text, language_code, sentiment_score, submitted_at, created_at, updated_at
+            ) VALUES 
+            ('fb-cmp-01', ?, ?, ?, 'CUSTOMER_PORTAL', 'WEB_FORM', 'CUSTOMER', 'INTERNAL', 'processed', 'NEW', '[Product Issues] Damaged organic dairy cartons leaking in aisle 4', 'en', -0.7, ?, ?, ?),
+            ('fb-cmp-02', ?, ?, ?, 'CUSTOMER_PORTAL', 'WEB_FORM', 'CUSTOMER', 'INTERNAL', 'processed', 'RESOLVED', '[Returns and Refunds] Overcharged on electronic scanner lane #3', 'en', -0.5, ?, ?, ?),
+            ('fb-cmp-03', ?, ?, ?, 'CUSTOMER_PORTAL', 'WEB_FORM', 'CUSTOMER', 'INTERNAL', 'processed', 'NEW', '[Delivery] Curbside delivery missing items', 'en', -0.6, ?, ?, ?)
+        """, (
+            org_id, reg_pnw, store_104, two_days_ago, two_days_ago, two_days_ago,
+            org_id, reg_pnw, store_104, three_days_ago, three_days_ago, three_days_ago,
+            org_id, reg_pnw, store_104, thirty_mins_ago, thirty_mins_ago, thirty_mins_ago
+        ))
+
+        cur.execute("""
+            INSERT OR REPLACE INTO customer_complaints (
+                id, reference_number, customer_id, customer_name, customer_email,
+                customer_phone, category, order_number, store_id, store_name,
+                subject, description, attachment_url, attachment_name, status,
+                priority, assigned_team_id, assigned_team_name, assigned_to_user_id, assigned_to_name,
+                investigation_notes, resolution_summary, feedback_item_id, timeline, created_at, updated_at
+            ) VALUES 
+            (
+                'cmp-seed-01', 'REF-2026-A8K92', 'usr-cust-01', 'Sarah Jenkins (Customer)', 'customer@retailwave.com',
+                '+1-555-019-2834', 'Product Issues', 'ORD-84920', ?, 'Apex Supercenter - Seattle Downtown',
+                'Damaged organic dairy cartons leaking in aisle 4',
+                'I purchased 3 cartons of organic whole milk today and two of them were split at the bottom seal, spoiling my grocery bag. The dairy cooler rack was also leaking onto the floor.',
+                '/static/uploads/complaints/dairy_cooler_leak.jpg', 'dairy_cooler_leak.jpg', 'IN_PROGRESS',
+                'HIGH', ?, 'Regional Commercial HVAC & Refrigeration', 'usr-maint', 'Carlos Gomez (Senior HVAC Tech)',
+                'Inspected reach-in cooler 4B. Temperature sensor was reading +8F above threshold. Dispatching HVAC technician Carlos Gomez for valve replacement.',
+                NULL, 'fb-cmp-01', ?, ?, ?
+            ),
+            (
+                'cmp-seed-02', 'REF-2026-F4N18', 'usr-cust-01', 'Sarah Jenkins (Customer)', 'customer@retailwave.com',
+                '+1-555-019-2834', 'Returns and Refunds', 'ORD-77312', ?, 'Apex Supercenter - Seattle Downtown',
+                'Overcharged on electronic scanner lane #3',
+                'The self-checkout scanner registered two items for organic apples instead of one. The cashier gave me an apology slip but the card charge was not refunded.',
+                NULL, NULL, 'RESOLVED',
+                'MEDIUM', ?, 'Regional Store IT & POS Systems', 'usr-store', 'David Miller (Store 104 Lead)',
+                'Scanner lane 3 multi-scan sensitivity adjusted. Refund transaction REF-9921 processed back to customer visa ending in 4012.',
+                'Your refund of $14.50 has been processed to your original payment method. Self-checkout terminal sensitivity has been re-calibrated.',
+                'fb-cmp-02', ?, ?, ?
+            ),
+            (
+                'cmp-seed-03', 'REF-2026-M7T34', 'usr-cust-01', 'Sarah Jenkins (Customer)', 'customer@retailwave.com',
+                '+1-555-019-2834', 'Delivery', 'ORD-92011', ?, 'Apex Supercenter - Seattle Downtown',
+                'Curbside delivery missing items',
+                'Ordered 12 items for curbside pickup at 2 PM. Two containers of Greek yogurt and one loaf of artisan sourdough were missing from the trunk loading.',
+                NULL, NULL, 'SUBMITTED',
+                'MEDIUM', NULL, NULL, NULL, NULL,
+                NULL, NULL, 'fb-cmp-03', ?, ?, ?
+            );
+        """, (
+            store_104, team_hvac, cmp_timeline_01, two_days_ago, two_hours_ago,
+            store_104, team_it, cmp_timeline_02, three_days_ago, yesterday,
+            store_104, cmp_timeline_03, thirty_mins_ago, thirty_mins_ago
+        ))
 
         conn.commit()
         logger.info("Database seeding completed successfully.")

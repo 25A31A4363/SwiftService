@@ -17,8 +17,9 @@ export const state = {
   stores: [],
   teams: [],
 
-  // Active View
-  currentView: 'dashboard', // 'dashboard' | 'feedback' | 'issues' | 'alerts' | 'actions' | 'audit' | 'personal-home'
+  // Active View & Portal Mode
+  currentView: 'dashboard', // 'dashboard' | 'feedback' | 'issues' | 'alerts' | 'actions' | 'audit' | 'personal-home' | 'customer-complaints'
+  currentPortalMode: localStorage.getItem('r5_portal_mode') || 'CUSTOMER', // 'CUSTOMER' | 'OPS'
 
   // Counters
   activeAlertsCount: 0,
@@ -63,6 +64,12 @@ export const state = {
 
   setView(viewName) {
     this.currentView = viewName;
+    this.notify();
+  },
+
+  setPortalMode(mode) {
+    this.currentPortalMode = mode;
+    localStorage.setItem('r5_portal_mode', mode);
     this.notify();
   }
 };

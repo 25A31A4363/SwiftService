@@ -380,6 +380,63 @@ def run_schema_migrations(conn: sqlite3.Connection) -> None:
         if "task_type" not in ai_cols:
             conn.execute("ALTER TABLE ai_governance_logs ADD COLUMN task_type TEXT NOT NULL DEFAULT 'INFERENCE';")
 
+    # User table migrations (Customer Auth & OTP)
+    user_cols = get_columns("users")
+    if user_cols:
+        if "is_verified" not in user_cols:
+            conn.execute("ALTER TABLE users ADD COLUMN is_verified INTEGER NOT NULL DEFAULT 1;")
+        if "phone" not in user_cols:
+            conn.execute("ALTER TABLE users ADD COLUMN phone TEXT;")
+
+    # Email Verification OTPs table
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS email_verification_otps (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            email TEXT NOT NULL,
+            otp_code_hash TEXT NOT NULL,
+            purpose TEXT NOT NULL DEFAULT 'REGISTRATION',
+            expires_at TEXT NOT NULL,
+            attempts INTEGER NOT NULL DEFAULT 0,
+            max_attempts INTEGER NOT NULL DEFAULT 5,
+            is_used INTEGER NOT NULL DEFAULT 0,
+            created_at TEXT NOT NULL
+        );
+    """)
+
+    # Customer Complaints table
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS customer_complaints (
+            id TEXT PRIMARY KEY,
+            reference_number TEXT UNIQUE NOT NULL,
+            customer_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            customer_name TEXT NOT NULL,
+            customer_email TEXT NOT NULL,
+            customer_phone TEXT,
+            category TEXT NOT NULL,
+            order_number TEXT,
+            store_id TEXT REFERENCES stores(id) ON DELETE SET NULL,
+            store_name TEXT,
+            subject TEXT NOT NULL,
+            description TEXT NOT NULL,
+            attachment_url TEXT,
+            attachment_name TEXT,
+            status TEXT NOT NULL DEFAULT 'SUBMITTED',
+            priority TEXT NOT NULL DEFAULT 'MEDIUM',
+            assigned_team_id TEXT REFERENCES operational_teams(id) ON DELETE SET NULL,
+            assigned_team_name TEXT,
+            assigned_to_user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+            assigned_to_name TEXT,
+            investigation_notes TEXT,
+            resolution_summary TEXT,
+            feedback_item_id TEXT REFERENCES feedback_items(id) ON DELETE SET NULL,
+            issue_id TEXT REFERENCES issues(id) ON DELETE SET NULL,
+            timeline TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+        );
+    """)
+
     # Production Performance Indexes
     conn.execute("CREATE INDEX IF NOT EXISTS idx_fb_org_created ON feedback_items(organization_id, created_at DESC);")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_fb_status ON feedback_items(status, processing_status);")
@@ -393,6 +450,12 @@ def run_schema_migrations(conn: sqlite3.Connection) -> None:
     conn.execute("CREATE INDEX IF NOT EXISTS idx_idempotency_expires ON idempotency_keys(expires_at);")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_ai_logs_req ON ai_governance_logs(request_id);")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_ai_logs_status ON ai_governance_logs(status, created_at DESC);")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_customer_complaints_cust ON customer_complaints(customer_id);")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_customer_complaints_ref ON customer_complaints(reference_number);")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_customer_complaints_status ON customer_complaints(status);")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_customer_complaints_store ON customer_complaints(store_id);")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_email_otps_email ON email_verification_otps(email);")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_email_otps_user ON email_verification_otps(user_id);")
 
     conn.commit()
 

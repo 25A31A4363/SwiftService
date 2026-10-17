@@ -12,7 +12,8 @@ class TestRbacUnit(unittest.TestCase):
             "STORE_MANAGER",
             "MAINTENANCE_TEAM",
             "ANALYST",
-            "VIEWER"
+            "VIEWER",
+            "CUSTOMER"
         }
         actual_roles = {r.value for r in Role}
         self.assertEqual(expected_roles, actual_roles)

@@ -44,6 +44,12 @@ export const ROLE_PRESETS = [
     email: 'viewer@apex.com',
     title: 'Store Auditor',
     desc: 'Read-only visibility across metrics'
+  },
+  {
+    role: 'CUSTOMER',
+    email: 'customer@retailwave.com',
+    title: 'Sarah Jenkins (Customer)',
+    desc: 'RetailWave portal, complaint filing & tracking'
   }
 ];
 
@@ -60,6 +66,16 @@ export const NAV_ITEMS = [
     section: 'core',
     label: 'Command Center',
     icon: '📊',
+    minRole: 'VIEWER',
+    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+  },
+  {
+    id: 'customer-complaints',
+    section: 'core',
+    label: 'Customer Complaints',
+    icon: '💬',
+    highlight: true,
+    badgeText: 'PORTAL',
     minRole: 'VIEWER',
     allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
   },

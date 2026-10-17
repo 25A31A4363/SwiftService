@@ -24,6 +24,7 @@ from backend.app.api.v1.observability_router import router as observability_rout
 from backend.app.api.v1.jobs_router import router as jobs_router
 from backend.app.api.v1.evaluation_router import router as evaluation_router
 from backend.app.api.v1.demo_router import router as demo_router
+from backend.app.api.v1.complaints_router import router as complaints_router
 
 api_v1_router = APIRouter()
 
@@ -52,5 +53,6 @@ api_v1_router.include_router(observability_router)
 api_v1_router.include_router(jobs_router)
 api_v1_router.include_router(evaluation_router)
 api_v1_router.include_router(demo_router)
+api_v1_router.include_router(complaints_router)
 
 

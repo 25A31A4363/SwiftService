@@ -9,6 +9,7 @@ class Role(str, Enum):
     MAINTENANCE_TEAM = "MAINTENANCE_TEAM"
     ANALYST = "ANALYST"
     VIEWER = "VIEWER"
+    CUSTOMER = "CUSTOMER"
 
 class Permission(str, Enum):
     # Org & Structure
@@ -62,6 +63,11 @@ class Permission(str, Enum):
     SECURITY_AUDIT = "security:audit"
     RETENTION_MANAGE = "retention:manage"
 
+    # Customer Complaint Portal
+    COMPLAINT_SUBMIT = "complaint:submit"
+    COMPLAINT_READ = "complaint:read"
+    COMPLAINT_MANAGE = "complaint:manage"
+
 ROLE_PERMISSIONS: Dict[Role, Set[Permission]] = {
     Role.ORGANIZATION_ADMIN: {p for p in Permission},
     Role.OPERATIONS_MANAGER: {
@@ -77,6 +83,7 @@ ROLE_PERMISSIONS: Dict[Role, Set[Permission]] = {
         Permission.RESOLUTION_READ, Permission.RESOLUTION_CREATE, Permission.RESOLUTION_VERIFY,
         Permission.AUDIT_READ, Permission.ANALYTICS_READ, Permission.ANALYTICS_EXPORT,
         Permission.GOVERNANCE_READ, Permission.GOVERNANCE_MANAGE, Permission.SECURITY_AUDIT, Permission.RETENTION_MANAGE,
+        Permission.COMPLAINT_READ, Permission.COMPLAINT_MANAGE,
     },
     Role.REGIONAL_MANAGER: {
         Permission.ORG_READ,
@@ -91,6 +98,7 @@ ROLE_PERMISSIONS: Dict[Role, Set[Permission]] = {
         Permission.RESOLUTION_READ, Permission.RESOLUTION_VERIFY,
         Permission.AUDIT_READ, Permission.ANALYTICS_READ, Permission.ANALYTICS_EXPORT,
         Permission.GOVERNANCE_READ,
+        Permission.COMPLAINT_READ, Permission.COMPLAINT_MANAGE,
     },
     Role.STORE_MANAGER: {
         Permission.ORG_READ,
@@ -104,6 +112,7 @@ ROLE_PERMISSIONS: Dict[Role, Set[Permission]] = {
         Permission.RESOLUTION_READ, Permission.RESOLUTION_CREATE, Permission.RESOLUTION_VERIFY,
         Permission.AUDIT_READ, Permission.ANALYTICS_READ,
         Permission.GOVERNANCE_READ,
+        Permission.COMPLAINT_READ, Permission.COMPLAINT_MANAGE,
     },
     Role.MAINTENANCE_TEAM: {
         Permission.STORE_READ,
@@ -113,6 +122,7 @@ ROLE_PERMISSIONS: Dict[Role, Set[Permission]] = {
         Permission.ALERT_READ, Permission.ALERT_ACKNOWLEDGE,
         Permission.ACTION_READ, Permission.ACTION_EXECUTE,
         Permission.RESOLUTION_READ, Permission.RESOLUTION_CREATE,
+        Permission.COMPLAINT_READ,
     },
     Role.ANALYST: {
         Permission.ORG_READ,
@@ -126,6 +136,7 @@ ROLE_PERMISSIONS: Dict[Role, Set[Permission]] = {
         Permission.RESOLUTION_READ,
         Permission.AUDIT_READ, Permission.ANALYTICS_READ, Permission.ANALYTICS_EXPORT,
         Permission.GOVERNANCE_READ, Permission.SECURITY_AUDIT,
+        Permission.COMPLAINT_READ, Permission.COMPLAINT_MANAGE,
     },
     Role.VIEWER: {
         Permission.ORG_READ,
@@ -137,6 +148,11 @@ ROLE_PERMISSIONS: Dict[Role, Set[Permission]] = {
         Permission.ACTION_READ,
         Permission.RESOLUTION_READ,
         Permission.ANALYTICS_READ,
+        Permission.COMPLAINT_READ,
+    },
+    Role.CUSTOMER: {
+        Permission.COMPLAINT_SUBMIT,
+        Permission.COMPLAINT_READ,
     },
 }
 
