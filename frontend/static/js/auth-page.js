@@ -41,6 +41,49 @@ export function renderAuthPage(container) {
             Swift Service connects frontline customer feedback, store incident detection, and multi-facility operational triage into a single closed-loop resolution platform.
           </p>
 
+          <!-- Live Retail Fleet Operational Showcase Card -->
+          <div class="auth-retail-showcase-card">
+            <div class="auth-showcase-header">
+              <div class="auth-showcase-title">
+                <span class="auth-live-dot"></span>
+                <span>Store Fleet Operational Signal — Store #104</span>
+              </div>
+              <span class="auth-showcase-badge">LIVE MONITORING</span>
+            </div>
+            <div class="auth-showcase-body">
+              <div class="auth-signal-row">
+                <div class="auth-signal-icon">❄️</div>
+                <div class="auth-signal-meta">
+                  <div class="auth-signal-label">Refrigeration Failure Anomaly</div>
+                  <div class="auth-signal-detail">Dairy Aisle Walk-in Cooler • Temperature drift +4.2°C</div>
+                </div>
+                <div class="auth-signal-priority p1-tag">P1 CRITICAL</div>
+              </div>
+              <div class="auth-signal-row">
+                <div class="auth-signal-icon">🛒</div>
+                <div class="auth-signal-meta">
+                  <div class="auth-signal-label">Checkout POS Latency Spike</div>
+                  <div class="auth-signal-detail">Lane 3 & 4 Terminal freezes • 12 customer reports</div>
+                </div>
+                <div class="auth-signal-priority p2-tag">P2 HIGH</div>
+              </div>
+              <div class="auth-showcase-kpis">
+                <div class="auth-kpi-item">
+                  <span class="auth-kpi-val">18 min</span>
+                  <span class="auth-kpi-lbl">Avg SLA Resolution</span>
+                </div>
+                <div class="auth-kpi-item">
+                  <span class="auth-kpi-val">99.4%</span>
+                  <span class="auth-kpi-lbl">Verified Outcomes</span>
+                </div>
+                <div class="auth-kpi-item">
+                  <span class="auth-kpi-val">42 Stores</span>
+                  <span class="auth-kpi-lbl">PNW Fleet Active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="auth-feature-list">
             <div class="auth-feature-item">
               <span class="auth-feature-icon">🛡️</span>
@@ -119,23 +162,7 @@ function renderActiveTabContent(container) {
         <p>Sign in to access your Swift Service portal.</p>
       </div>
 
-      <!-- Quick Demo Persona Sandbox Selector -->
-      <div class="auth-sandbox-enclave">
-        <div class="auth-sandbox-label">
-          <span>⚡ Quick-Fill Evaluation Personas</span>
-          <span class="auth-sandbox-hint">Click any persona to test:</span>
-        </div>
-        <div class="auth-persona-chips">
-          ${ROLE_PRESETS.map(p => `
-            <button type="button" class="auth-persona-chip" data-email="${p.email}" title="${p.desc}">
-              <span class="auth-persona-chip-title">${p.title}</span>
-              <span class="auth-persona-chip-role">${p.role.replace(/_/g, ' ')}</span>
-            </button>
-          `).join('')}
-        </div>
-      </div>
-
-      <form id="form-swift-signin" class="auth-form">
+      <form id="form-swift-signin" class="auth-form" novalidate>
         <div class="form-group">
           <label class="form-label" for="signin-email">Email Address</label>
           <input type="email" id="signin-email" class="form-input" placeholder="e.g. name@organization.com or customer@retailwave.com" required autocomplete="email" />
@@ -148,7 +175,7 @@ function renderActiveTabContent(container) {
           </div>
           <div class="auth-password-wrapper">
             <input type="password" id="signin-password" class="form-input" placeholder="••••••••" required autocomplete="current-password" />
-            <button type="button" id="btn-toggle-signin-pwd" class="auth-pwd-toggle" title="Show or hide password">👁️</button>
+            <button type="button" id="btn-toggle-signin-pwd" class="auth-pwd-toggle" title="Show or hide password" aria-label="Toggle password visibility">👁️</button>
           </div>
         </div>
 
@@ -170,6 +197,22 @@ function renderActiveTabContent(container) {
           <button type="button" id="btn-prompt-to-register" class="auth-link-btn">Create an Account</button>
         </div>
       </form>
+
+      <!-- Quick Demo Persona Sandbox Selector (positioned conveniently below primary form) -->
+      <div class="auth-sandbox-enclave">
+        <div class="auth-sandbox-label">
+          <span>⚡ One-Click Evaluation Personas</span>
+          <span class="auth-sandbox-hint">Click any role to auto-fill & test:</span>
+        </div>
+        <div class="auth-persona-chips">
+          ${ROLE_PRESETS.map(p => `
+            <button type="button" class="auth-persona-chip" data-email="${p.email}" title="${p.desc}">
+              <span class="auth-persona-chip-title">${p.title}</span>
+              <span class="auth-persona-chip-role">${p.role.replace(/_/g, ' ')}</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>
     `;
 
     attachSignInEvents(container);
@@ -293,6 +336,9 @@ function attachSignInEvents(container) {
   // Password Visibility Toggle
   const btnTogglePwd = container.querySelector('#btn-toggle-signin-pwd');
   const pwdInput = container.querySelector('#signin-password');
+  const emailInput = container.querySelector('#signin-email');
+  const form = container.querySelector('#form-swift-signin');
+
   btnTogglePwd?.addEventListener('click', () => {
     if (!pwdInput) return;
     const isPwd = pwdInput.type === 'password';
@@ -300,16 +346,38 @@ function attachSignInEvents(container) {
     btnTogglePwd.textContent = isPwd ? '🔒' : '👁️';
   });
 
+  // Enter Key Handler for seamless keyboard submission
+  emailInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!pwdInput.value) {
+        pwdInput.focus();
+      } else {
+        form?.requestSubmit();
+      }
+    }
+  });
+
+  pwdInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      form?.requestSubmit();
+    }
+  });
+
   // Demo Persona Quick-Fill Chips
   container.querySelectorAll('.auth-persona-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       const email = chip.getAttribute('data-email');
-      const emailInput = container.querySelector('#signin-email');
-      const pwdInput = container.querySelector('#signin-password');
       if (emailInput && pwdInput) {
         emailInput.value = email;
         pwdInput.value = 'Password123!';
+        
+        container.querySelectorAll('.auth-persona-chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+        
         showToast(`Filled credentials for ${email}`, 'info');
+        container.querySelector('#btn-submit-signin')?.focus();
       }
     });
   });
@@ -334,13 +402,26 @@ function attachSignInEvents(container) {
   });
 
   // Sign In Form Submit
-  const form = container.querySelector('#form-swift-signin');
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btnSubmit = container.querySelector('#btn-submit-signin');
     const errBox = container.querySelector('#signin-error-box');
-    const email = container.querySelector('#signin-email').value.trim();
-    const password = container.querySelector('#signin-password').value;
+    const email = emailInput?.value.trim();
+    const password = pwdInput?.value;
+
+    if (!email) {
+      errBox.style.display = 'block';
+      errBox.textContent = 'Please enter your email address.';
+      emailInput?.focus();
+      return;
+    }
+
+    if (!password) {
+      errBox.style.display = 'block';
+      errBox.textContent = 'Please enter your password.';
+      pwdInput?.focus();
+      return;
+    }
 
     btnSubmit.disabled = true;
     btnSubmit.innerHTML = 'Authenticating...';
@@ -360,7 +441,22 @@ function attachSignInEvents(container) {
     } catch (err) {
       console.error('Sign In Error:', err);
       errBox.style.display = 'block';
-      errBox.textContent = 'Authentication Failed: ' + (err.message || 'Invalid email or password');
+
+      if (err.message && err.message.includes('EMAIL_UNVERIFIED')) {
+        errBox.innerHTML = `
+          <div style="font-weight: 700; margin-bottom: 0.35rem;">⚠️ Account Verification Pending</div>
+          <div style="font-size: 0.82rem; margin-bottom: 0.65rem;">Please complete email OTP verification to activate your account.</div>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-unverified-verify-now" style="width: 100%; justify-content: center; font-size: 0.8rem;">
+            ⚡ Enter Verification Code for ${escapeHtml(email)}
+          </button>
+        `;
+        errBox.querySelector('#btn-unverified-verify-now')?.addEventListener('click', () => {
+          openOtpVerificationModal(email, null, null);
+        });
+      } else {
+        errBox.textContent = 'Authentication Failed: ' + (err.message || 'Invalid email or password');
+      }
+
       btnSubmit.disabled = false;
       btnSubmit.innerHTML = 'Sign In to Swift Service';
     }

@@ -99,6 +99,7 @@ function render() {
   // If unauthenticated, render the dedicated Swift Service Authentication Page
   if (!state.token || !state.user) {
     closeModal();
+    elApp.className = 'app-shell-auth';
     renderAuthPage(elApp);
     return;
   }
@@ -106,11 +107,13 @@ function render() {
   // If in CUSTOMER mode or user is a registered customer, render the Swift Service Customer Experience Portal
   if (state.currentPortalMode === 'CUSTOMER' || (state.user && state.user.role === 'CUSTOMER')) {
     closeModal();
+    elApp.className = 'app-shell-customer';
     renderCustomerPortal(elApp);
     return;
   }
 
   closeModal();
+  elApp.className = 'app-shell-ops';
 
   elApp.innerHTML = `
     <!-- Mobile Backdrop -->
