@@ -10,16 +10,16 @@ import { api, showToast } from './api.js';
 import { escapeHtml } from './ui-utils.js';
 
 export const COMPLAINT_CATEGORIES = [
-  { id: 'Order and Delivery', icon: '📦', title: 'Order and Delivery', desc: 'Late carrier delivery, missing bags, or transit damage' },
-  { id: 'Product Quality or Defect', icon: '🏷️', title: 'Product Quality or Defect', desc: 'Damaged packaging, spoiled goods, or quality defects' },
+  { id: 'Order and Delivery', icon: '📦', title: 'Order and Delivery', desc: 'Late carrier delivery, missing items, or transit damage' },
+  { id: 'Product Quality', icon: '🏷️', title: 'Product Quality', desc: 'Damaged packaging, spoiled goods, or quality defects' },
   { id: 'Returns and Refunds', icon: '🔄', title: 'Returns and Refunds', desc: 'Refund delays, receipt lookup, or return authorization' },
   { id: 'Payment and Billing', icon: '💳', title: 'Payment and Billing', desc: 'Double charge, declined card, or register discrepancy' },
   { id: 'Store Service', icon: '🏪', title: 'Store Service', desc: 'Aisle safety hazards, wet floors, or facility cleanliness' },
   { id: 'Staff Behaviour', icon: '👥', title: 'Staff Behaviour', desc: 'Customer assistance, employee conduct, or service delays' },
   { id: 'Product Availability', icon: '🛒', title: 'Product Availability', desc: 'Out-of-stock items, empty shelves, or inventory gaps' },
-  { id: 'Pricing or Offers', icon: '🏷️', title: 'Pricing or Offers', desc: 'Shelf tag mismatch, coupon issues, or promotional errors' },
+  { id: 'Pricing and Offers', icon: '🏷️', title: 'Pricing and Offers', desc: 'Shelf tag mismatch, coupon issues, or promotional errors' },
   { id: 'Store Facilities', icon: '🏢', title: 'Store Facilities', desc: 'Restrooms, parking, shopping carts, HVAC, or accessibility' },
-  { id: 'Other', icon: '💬', title: 'Other Inquiries', desc: 'General customer inquiries and operational feedback' }
+  { id: 'Other', icon: '💬', title: 'Other', desc: 'General customer inquiries and operational feedback' }
 ];
 
 export async function renderCustomerPortal(container) {
@@ -201,31 +201,74 @@ export async function renderCustomerPortal(container) {
           `}
         </section>
 
-        <!-- Help & FAQ Section -->
+        <!-- Help & FAQ Section (Accessible Interactive Accordion) -->
         <section class="ss-faq-section" id="section-help">
           <div class="ss-section-header">
             <div>
               <h2 class="ss-section-title">Frequently Asked Questions</h2>
-              <p class="ss-section-subtitle">Common questions regarding our resolution timeline and complaint process.</p>
+              <p class="ss-section-subtitle">Common questions regarding our resolution timeline, reference tracking, and complaint process.</p>
             </div>
           </div>
 
-          <div class="ss-faq-grid">
+          <div class="ss-faq-accordion" role="region" aria-label="Frequently Asked Questions">
             <div class="ss-faq-item">
-              <div class="ss-faq-q">⏱️ How long does resolution usually take?</div>
-              <div class="ss-faq-a">Our store operations team reviews incoming complaints within 2 hours. Physical store maintenance or refrigeration investigations are typically assigned and resolved within 24 to 48 hours.</div>
+              <button type="button" class="ss-faq-btn" aria-expanded="false" aria-controls="faq-ans-1">
+                <span>📝 How do I submit a new complaint?</span>
+                <span class="ss-faq-icon" aria-hidden="true">+</span>
+              </button>
+              <div id="faq-ans-1" class="ss-faq-content" hidden>
+                Click "Submit a Complaint" or select any of the 10 service categories above. Complete the 3-step intake wizard with your order reference (if applicable), store facility, and detailed description, then confirm your submission.
+              </div>
             </div>
+
             <div class="ss-faq-item">
-              <div class="ss-faq-q">🧾 Can I track a complaint without logging in?</div>
-              <div class="ss-faq-a">Yes. Every complaint receives a unique reference number (e.g. REF-2026-A8K92). You can enter this code in the tracker bar above to view live chronological milestones at any time.</div>
+              <button type="button" class="ss-faq-btn" aria-expanded="false" aria-controls="faq-ans-2">
+                <span>🔎 Where can I find my complaint reference number?</span>
+                <span class="ss-faq-icon" aria-hidden="true">+</span>
+              </button>
+              <div id="faq-ans-2" class="ss-faq-content" hidden>
+                Upon submission, a unique reference code (e.g. <code>REF-2026-A8K92</code>) is generated and displayed on your confirmation screen with a single-click copy button. When logged in, your reference codes are also permanently available under the "My Complaints" section.
+              </div>
             </div>
+
             <div class="ss-faq-item">
-              <div class="ss-faq-q">📎 What supporting files can I attach?</div>
-              <div class="ss-faq-a">You can attach PNG, JPG, or WEBP photos of product packaging, damaged cartons, store shelf tags, or digital PDF receipts up to 10 MB.</div>
+              <button type="button" class="ss-faq-btn" aria-expanded="false" aria-controls="faq-ans-3">
+                <span>📊 How do I check my complaint status?</span>
+                <span class="ss-faq-icon" aria-hidden="true">+</span>
+              </button>
+              <div id="faq-ans-3" class="ss-faq-content" hidden>
+                Signed-in customers can view live statuses under "My Complaints" or click "Track Status" in the navigation bar. You can also enter any valid reference number in the quick tracker bar on this page to view chronological milestones.
+              </div>
             </div>
+
             <div class="ss-faq-item">
-              <div class="ss-faq-q">🔒 Who has access to my complaint information?</div>
-              <div class="ss-faq-a">Only you and authorized Swift Service operational staff assigned to your specific store location have access. Your contact details are never shared with other customers or external parties.</div>
+              <button type="button" class="ss-faq-btn" aria-expanded="false" aria-controls="faq-ans-4">
+                <span>⏱️ What updates should I expect after submitting?</span>
+                <span class="ss-faq-icon" aria-hidden="true">+</span>
+              </button>
+              <div id="faq-ans-4" class="ss-faq-content" hidden>
+                Our store operations team reviews submissions within 2 hours. You will receive milestone updates as your report transitions through "Under Review", "In Progress" (with assigned store team), and "Resolved" with published resolution notes.
+              </div>
+            </div>
+
+            <div class="ss-faq-item">
+              <button type="button" class="ss-faq-btn" aria-expanded="false" aria-controls="faq-ans-5">
+                <span>📎 Can I provide additional information or evidence?</span>
+                <span class="ss-faq-icon" aria-hidden="true">+</span>
+              </button>
+              <div id="faq-ans-5" class="ss-faq-content" hidden>
+                Yes. During submission, you can attach photos of receipts, product labels, or damaged goods (PNG, JPG, WEBP, PDF up to 10 MB). If an investigation is underway, the assigned Store Lead can also review any notes you provide.
+              </div>
+            </div>
+
+            <div class="ss-faq-item">
+              <button type="button" class="ss-faq-btn" aria-expanded="false" aria-controls="faq-ans-6">
+                <span>📞 How do I contact customer support for urgent issues?</span>
+                <span class="ss-faq-icon" aria-hidden="true">+</span>
+              </button>
+              <div id="faq-ans-6" class="ss-faq-content" hidden>
+                For urgent physical store safety hazards (e.g. wet spills, broken glass, refrigeration leaks), please notify on-duty store staff immediately or submit a complaint under Store Service / Facilities for prioritized P1 escalation.
+              </div>
             </div>
           </div>
         </section>
@@ -388,6 +431,24 @@ function attachCustomerPortalEvents(container, myComplaints) {
     });
   });
 
+  // Interactive FAQ Accordion
+  container.querySelectorAll('.ss-faq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+      const panelId = btn.getAttribute('aria-controls');
+      const panel = container.querySelector(`#${panelId}`);
+      const icon = btn.querySelector('.ss-faq-icon');
+
+      btn.setAttribute('aria-expanded', !isExpanded);
+      if (panel) {
+        panel.hidden = isExpanded;
+      }
+      if (icon) {
+        icon.textContent = isExpanded ? '+' : '−';
+      }
+    });
+  });
+
   // Quick Tracker Form
   const trackForm = container.querySelector('#form-quick-track');
   trackForm?.addEventListener('submit', async (e) => {
@@ -492,13 +553,13 @@ export function openGuidedComplaintWizard(initialCategory = 'Order and Delivery'
   function renderWizard() {
     modalContainer.innerHTML = `
       <div class="rw-modal-backdrop" id="wizard-modal-backdrop">
-        <div class="rw-modal ss-wizard-modal">
-          <div class="rw-modal-header">
+        <div class="rw-modal ss-wizard-modal" style="background: #ffffff; color: #0f172a; border: 1px solid #e2e8f0; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+          <div class="rw-modal-header" style="border-bottom: 1px solid #e2e8f0;">
             <div>
-              <h2 style="font-size: 1.25rem; font-weight: 700; color: #fff;">File a Customer Complaint</h2>
-              <div style="font-size: 0.8rem; color: var(--text-muted);">Guided 3-Step Intake — Directly Linked to Swift Service Intelligence</div>
+              <h2 style="font-size: 1.25rem; font-weight: 700; color: #0f172a;">File a Customer Complaint</h2>
+              <div style="font-size: 0.8rem; color: #64748b;">Guided 3-Step Intake — Directly Linked to Swift Service Intelligence</div>
             </div>
-            <button class="rw-btn-close" id="btn-close-wizard">✕</button>
+            <button class="rw-btn-close" id="btn-close-wizard" style="color: #64748b;">✕</button>
           </div>
 
           <!-- 3-Step Stepper Header -->
@@ -527,7 +588,7 @@ export function openGuidedComplaintWizard(initialCategory = 'Order and Delivery'
           </div>
 
           <!-- Wizard Footer Controls -->
-          <div class="rw-modal-footer ss-wizard-footer">
+          <div class="rw-modal-footer ss-wizard-footer" style="border-top: 1px solid #e2e8f0;">
             ${currentStep > 1 ? `
               <button type="button" class="btn btn-secondary" id="btn-wizard-prev">
                 ← Back
@@ -558,9 +619,29 @@ export function openGuidedComplaintWizard(initialCategory = 'Order and Delivery'
   function renderStep1Html(data, storeList) {
     return `
       <div class="ss-step-content">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label required">1. Choose a Category</label>
+          <div class="ss-wiz-category-grid" id="wiz-category-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 0.5rem; margin-top: 0.35rem;">
+            ${COMPLAINT_CATEGORIES.map(c => {
+              const isSelected = c.id === data.category;
+              return `
+                <button 
+                  type="button" 
+                  class="ss-wiz-cat-chip ${isSelected ? 'active' : ''}" 
+                  data-category="${c.id}" 
+                  style="display: flex; align-items: center; gap: 0.45rem; padding: 0.55rem 0.65rem; border: 1.5px solid ${isSelected ? 'var(--accent-primary, #2563eb)' : '#e2e8f0'}; background: ${isSelected ? '#eff6ff' : '#ffffff'}; color: ${isSelected ? '#1d4ed8' : '#334155'}; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; text-align: left; transition: all 150ms ease; box-shadow: ${isSelected ? '0 0 0 1px #2563eb' : 'none'};"
+                >
+                  <span style="font-size: 1.1rem; line-height: 1;">${c.icon}</span>
+                  <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.8rem;">${c.title}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
         <div class="form-row">
           <div class="form-group flex-1">
-            <label class="form-label required" for="wiz-category">Complaint Category</label>
+            <label class="form-label required" for="wiz-category">Category Dropdown</label>
             <select id="wiz-category" class="form-input">
               ${COMPLAINT_CATEGORIES.map(c => `
                 <option value="${c.id}" ${c.id === data.category ? 'selected' : ''}>${c.icon} ${c.title}</option>
@@ -666,8 +747,8 @@ export function openGuidedComplaintWizard(initialCategory = 'Order and Delivery'
 
     return `
       <div class="ss-step-content">
-        <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1.25rem;">
-          <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem;">
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: #0f172a; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">
             Review Your Complaint Information
           </h3>
 
@@ -717,12 +798,14 @@ export function openGuidedComplaintWizard(initialCategory = 'Order and Delivery'
   function getCategoryFollowUpPrompt(category) {
     switch (category) {
       case 'Order and Delivery': return 'Was this an in-store order or home courier delivery?';
+      case 'Product Quality':
       case 'Product Quality or Defect': return 'What is the product brand name, batch code, or expiration date?';
       case 'Returns and Refunds': return 'Do you have the original store purchase receipt or return slip?';
       case 'Payment and Billing': return 'Did the self-pay register terminal print a receipt or error slip?';
       case 'Store Service': return 'Which specific aisle or department was affected?';
       case 'Staff Behaviour': return 'Which store counter or department did this occur in?';
       case 'Product Availability': return 'Which specific product brand or flavor was missing from shelves?';
+      case 'Pricing and Offers':
       case 'Pricing or Offers': return 'What was the posted shelf price vs the scanned register price?';
       case 'Store Facilities': return 'Which facility area (restrooms, entrance, parking) requires maintenance?';
       default: return 'Any additional context for our operations investigation team:';
@@ -737,6 +820,39 @@ export function openGuidedComplaintWizard(initialCategory = 'Order and Delivery'
     modalContainer.querySelector('#wizard-modal-backdrop')?.addEventListener('click', (e) => {
       if (e.target.id === 'wizard-modal-backdrop') closeWizard();
     });
+
+    // Step 1 Category Synchronization (Interactive Chips & Dropdown)
+    if (currentStep === 1) {
+      modalContainer.querySelectorAll('.ss-wiz-cat-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const cat = chip.getAttribute('data-category');
+          wizardData.category = cat;
+          const sel = modalContainer.querySelector('#wiz-category');
+          if (sel) sel.value = cat;
+          modalContainer.querySelectorAll('.ss-wiz-cat-chip').forEach(c => {
+            const isMatch = c.getAttribute('data-category') === cat;
+            c.classList.toggle('active', isMatch);
+            c.style.borderColor = isMatch ? 'var(--accent-primary, #2563eb)' : '#e2e8f0';
+            c.style.background = isMatch ? '#eff6ff' : '#ffffff';
+            c.style.color = isMatch ? '#1d4ed8' : '#334155';
+            c.style.boxShadow = isMatch ? '0 0 0 1px #2563eb' : 'none';
+          });
+        });
+      });
+
+      modalContainer.querySelector('#wiz-category')?.addEventListener('change', (e) => {
+        const cat = e.target.value;
+        wizardData.category = cat;
+        modalContainer.querySelectorAll('.ss-wiz-cat-chip').forEach(c => {
+          const isMatch = c.getAttribute('data-category') === cat;
+          c.classList.toggle('active', isMatch);
+          c.style.borderColor = isMatch ? 'var(--accent-primary, #2563eb)' : '#e2e8f0';
+          c.style.background = isMatch ? '#eff6ff' : '#ffffff';
+          c.style.color = isMatch ? '#1d4ed8' : '#334155';
+          c.style.boxShadow = isMatch ? '0 0 0 1px #2563eb' : 'none';
+        });
+      });
+    }
 
     // Step 1 -> Step 2
     modalContainer.querySelector('#btn-wizard-next')?.addEventListener('click', () => {
@@ -862,42 +978,51 @@ export function openGuidedComplaintWizard(initialCategory = 'Order and Delivery'
   function renderConfirmationScreen(complaint) {
     modalContainer.innerHTML = `
       <div class="rw-modal-backdrop">
-        <div class="rw-modal" style="max-width: 520px; text-align: center;">
+        <div class="rw-modal" style="max-width: 520px; text-align: center; background: #ffffff; color: #0f172a; border: 1px solid #e2e8f0; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
           <div class="rw-modal-body" style="padding: 2.5rem 1.5rem;">
-            <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: #ecfdf5; color: #10b981; font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; border: 2px solid #a7f3d0;">
               ✓
             </div>
 
-            <h2 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem;">
-              Complaint Submitted Successfully
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem;">
+              Your complaint has been submitted successfully.
             </h2>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+            <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 1.5rem;">
               Your report has been logged directly into the authoritative Swift Service operational triage system.
             </p>
 
-            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem;">
-              <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.35rem;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; text-align: center;">
+              <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.35rem; font-weight: 600;">
                 Official Reference Number
               </div>
-              <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
-                <code style="font-size: 1.45rem; font-weight: 800; letter-spacing: 2px; color: #38bdf8; font-family: monospace;" id="conf-ref-num">
+              <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <code style="font-size: 1.45rem; font-weight: 800; letter-spacing: 2px; color: #2563eb; font-family: monospace;" id="conf-ref-num">
                   ${escapeHtml(complaint.referenceNumber)}
                 </code>
-                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-ref" title="Copy Reference to Clipboard">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-ref" title="Copy Reference to Clipboard" style="font-size: 0.8rem;">
                   📋 Copy
                 </button>
               </div>
-              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.5rem;">
-                Submitted at: ${new Date(complaint.createdAt).toLocaleString()}
+
+              <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; font-size: 0.8rem; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 0.75rem; flex-wrap: wrap;">
+                <div>
+                  <strong>Status:</strong>
+                  <span class="ss-status-badge ${getStatusBadgeClass(complaint.status)}" style="margin-left: 0.25rem;">
+                    ${escapeHtml(complaint.status.replace(/_/g, ' '))}
+                  </span>
+                </div>
+                <div>
+                  <strong>Submitted:</strong> ${new Date(complaint.createdAt).toLocaleString()}
+                </div>
               </div>
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-              <button class="btn btn-primary" id="btn-track-now" style="width: 100%; justify-content: center; padding: 0.75rem;">
-                🔍 Track This Complaint Now
+              <button class="btn btn-primary" id="btn-view-my-complaint" style="width: 100%; justify-content: center; padding: 0.75rem; font-weight: 600;">
+                🔍 View My Complaint
               </button>
-              <button class="btn btn-secondary" id="btn-done-confirmation" style="width: 100%; justify-content: center;">
-                Return to Customer Portal
+              <button class="btn btn-secondary" id="btn-my-complaints-nav" style="width: 100%; justify-content: center; padding: 0.65rem;">
+                📋 My Complaints
               </button>
             </div>
           </div>
@@ -910,16 +1035,18 @@ export function openGuidedComplaintWizard(initialCategory = 'Order and Delivery'
       showToast('Reference number copied to clipboard', 'info');
     });
 
-    modalContainer.querySelector('#btn-track-now')?.addEventListener('click', () => {
+    modalContainer.querySelector('#btn-view-my-complaint')?.addEventListener('click', () => {
       modalContainer.innerHTML = '';
       openTrackingTimelineModal(complaint.referenceNumber);
     });
 
-    modalContainer.querySelector('#btn-done-confirmation')?.addEventListener('click', () => {
+    modalContainer.querySelector('#btn-my-complaints-nav')?.addEventListener('click', () => {
       modalContainer.innerHTML = '';
-      // Refresh customer portal
       const appEl = document.getElementById('app');
       if (appEl) renderCustomerPortal(appEl);
+      setTimeout(() => {
+        document.getElementById('section-my-complaints')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     });
   }
 
@@ -935,16 +1062,16 @@ export async function openTrackingTimelineModal(referenceNumber) {
 
   modalContainer.innerHTML = `
     <div class="rw-modal-backdrop" id="track-modal-backdrop">
-      <div class="rw-modal ss-tracking-modal">
-        <div class="rw-modal-header">
+      <div class="rw-modal ss-tracking-modal" style="background: #ffffff; color: #0f172a; border: 1px solid #e2e8f0; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+        <div class="rw-modal-header" style="border-bottom: 1px solid #e2e8f0;">
           <div>
-            <h2 style="font-size: 1.25rem; font-weight: 700; color: #fff;">Complaint Status & Timeline</h2>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">Tracking: ${escapeHtml(referenceNumber)}</div>
+            <h2 style="font-size: 1.25rem; font-weight: 700; color: #0f172a;">Complaint Status & Timeline</h2>
+            <div style="font-size: 0.8rem; color: #64748b;">Tracking: ${escapeHtml(referenceNumber)}</div>
           </div>
-          <button class="rw-btn-close" id="btn-close-track">✕</button>
+          <button class="rw-btn-close" id="btn-close-track" style="color: #64748b;">✕</button>
         </div>
         <div class="rw-modal-body" id="track-modal-content">
-          <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+          <div style="text-align: center; padding: 3rem 1rem; color: #64748b;">
             <div class="spinner" style="margin: 0 auto 1rem;"></div>
             Loading chronological status milestones...
           </div>
@@ -970,7 +1097,7 @@ export async function openTrackingTimelineModal(referenceNumber) {
           <div class="ss-empty-icon">⚠️</div>
           <h3>Complaint Reference Not Found</h3>
           <p>We could not find any active complaint with reference <code>${escapeHtml(referenceNumber)}</code>.</p>
-          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
+          <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">
             Please check the reference number and try again. Format: <strong>REF-2026-XXXXX</strong>.
           </div>
         </div>
@@ -993,30 +1120,30 @@ function renderTrackingContent(container, c) {
 
   container.innerHTML = `
     <!-- Top Details Banner -->
-    <div class="ss-track-summary-card">
+    <div class="ss-track-summary-card" style="background: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a;">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem;">
         <div>
           <span class="ss-ref-badge" style="font-size: 0.95rem;">${escapeHtml(c.referenceNumber)}</span>
-          <h3 style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 0.35rem;">${escapeHtml(c.subject)}</h3>
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-top: 0.35rem;">${escapeHtml(c.subject)}</h3>
         </div>
         <span class="ss-status-badge ${getStatusBadgeClass(c.status)}" style="font-size: 0.85rem; padding: 0.35rem 0.75rem;">
           ${escapeHtml(c.status.replace(/_/g, ' '))}
         </span>
       </div>
 
-      <div class="ss-track-meta-row">
+      <div class="ss-track-meta-row" style="color: #475569;">
         <div><strong>Category:</strong> ${escapeHtml(c.category)}</div>
         ${c.storeName ? `<div><strong>Store:</strong> ${escapeHtml(c.storeName)}</div>` : ''}
         ${c.orderNumber ? `<div><strong>Order Ref:</strong> ${escapeHtml(c.orderNumber)}</div>` : ''}
         ${c.assignedTeamName ? `<div><strong>Responsible Team:</strong> ${escapeHtml(c.assignedTeamName)}</div>` : ''}
       </div>
 
-      <div style="margin-top: 0.75rem; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; background: rgba(0,0,0,0.25); padding: 0.75rem; border-radius: 6px;">
+      <div style="margin-top: 0.75rem; font-size: 0.88rem; color: #334155; line-height: 1.5; background: #ffffff; border: 1px solid #e2e8f0; padding: 0.75rem; border-radius: 6px;">
         <strong>Reported Issue:</strong> ${escapeHtml(c.description)}
       </div>
 
       ${c.attachmentName ? `
-        <div style="margin-top: 0.75rem; font-size: 0.82rem; color: #38bdf8;">
+        <div style="margin-top: 0.75rem; font-size: 0.82rem; color: #2563eb;">
           📎 Attached Evidence: <strong>${escapeHtml(c.attachmentName)}</strong>
         </div>
       ` : ''}
@@ -1024,11 +1151,11 @@ function renderTrackingContent(container, c) {
 
     <!-- Official Resolution Box (When Available) -->
     ${c.resolutionSummary ? `
-      <div class="ss-resolution-banner">
-        <div style="font-weight: 700; color: #34d399; font-size: 0.92rem; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.4rem;">
+      <div class="ss-resolution-banner" style="background: #ecfdf5; border: 1px solid #a7f3d0;">
+        <div style="font-weight: 700; color: #059669; font-size: 0.92rem; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.4rem;">
           <span>✅</span> Official Swift Service Resolution Summary
         </div>
-        <div style="font-size: 0.88rem; color: #e2e8f0; line-height: 1.5;">
+        <div style="font-size: 0.88rem; color: #065f46; line-height: 1.5;">
           ${escapeHtml(c.resolutionSummary)}
         </div>
       </div>
@@ -1036,7 +1163,7 @@ function renderTrackingContent(container, c) {
 
     <!-- Chronological Stepper Progression -->
     <div style="margin-top: 2rem;">
-      <h4 style="font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 1.25rem;">
+      <h4 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-bottom: 1.25rem;">
         Chronological Operational Timeline
       </h4>
 
@@ -1086,18 +1213,18 @@ function openCustomerProfileModal() {
 
   modalContainer.innerHTML = `
     <div class="rw-modal-backdrop" id="profile-modal-backdrop">
-      <div class="rw-modal" style="max-width: 500px;">
-        <div class="rw-modal-header">
+      <div class="rw-modal" style="max-width: 500px; background: #ffffff; color: #0f172a; border: 1px solid #e2e8f0; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+        <div class="rw-modal-header" style="border-bottom: 1px solid #e2e8f0;">
           <div>
-            <h2 style="font-size: 1.15rem; font-weight: 700; color: #fff;">Account Settings & Security</h2>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(state.user.email)}</div>
+            <h2 style="font-size: 1.15rem; font-weight: 700; color: #0f172a;">Account Settings & Security</h2>
+            <div style="font-size: 0.8rem; color: #64748b;">${escapeHtml(state.user.email)}</div>
           </div>
-          <button class="rw-btn-close" id="btn-close-profile">✕</button>
+          <button class="rw-btn-close" id="btn-close-profile" style="color: #64748b;">✕</button>
         </div>
 
         <div class="rw-modal-body">
           <form id="form-update-profile" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
-            <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--accent-cyan);">Personal Information</h4>
+            <h4 style="font-size: 0.9rem; font-weight: 700; color: #2563eb;">Personal Information</h4>
             <div class="form-group">
               <label class="form-label" for="prof-fullname">Full Name</label>
               <input type="text" id="prof-fullname" class="form-input" value="${escapeHtml(state.user.fullName)}" required />
@@ -1250,7 +1377,11 @@ export async function renderCustomerComplaintsView(container) {
           Customer Complaints Stream (${complaints.length})
         </div>
         <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-          <input type="text" id="filter-complaints-search" class="form-input" style="width: 220px; font-size: 0.85rem;" placeholder="Search reference, subject..." />
+          <input type="text" id="filter-complaints-search" class="form-input" style="width: 200px; font-size: 0.85rem;" placeholder="Search reference, subject..." />
+          <select id="filter-complaints-category" class="form-input" style="width: 170px; font-size: 0.85rem;">
+            <option value="ALL">All Categories</option>
+            ${COMPLAINT_CATEGORIES.map(c => `<option value="${c.id}">${c.title}</option>`).join('')}
+          </select>
           <select id="filter-complaints-status" class="form-input" style="width: 140px; font-size: 0.85rem;">
             <option value="ALL">All Statuses</option>
             <option value="SUBMITTED">Submitted</option>
@@ -1331,11 +1462,13 @@ function attachStaffComplaintsEvents(container, complaints, teams) {
   // Search & Filter
   const searchInput = container.querySelector('#filter-complaints-search');
   const statusSelect = container.querySelector('#filter-complaints-status');
+  const categorySelect = container.querySelector('#filter-complaints-category');
   const tbody = container.querySelector('#tbody-staff-complaints');
 
   const applyFilters = () => {
     const q = (searchInput?.value || '').toLowerCase();
     const st = statusSelect?.value || 'ALL';
+    const cat = categorySelect?.value || 'ALL';
 
     const filtered = complaints.filter(c => {
       const matchSearch = !q || 
@@ -1344,7 +1477,8 @@ function attachStaffComplaintsEvents(container, complaints, teams) {
         c.customerName.toLowerCase().includes(q) ||
         c.category.toLowerCase().includes(q);
       const matchStatus = st === 'ALL' || c.status === st;
-      return matchSearch && matchStatus;
+      const matchCat = cat === 'ALL' || c.category === cat;
+      return matchSearch && matchStatus && matchCat;
     });
 
     if (tbody) tbody.innerHTML = renderStaffComplaintTableRows(filtered);
@@ -1361,6 +1495,7 @@ function attachStaffComplaintsEvents(container, complaints, teams) {
 
   searchInput?.addEventListener('input', applyFilters);
   statusSelect?.addEventListener('change', applyFilters);
+  categorySelect?.addEventListener('change', applyFilters);
 
   // Attach investigate buttons initially
   tbody?.querySelectorAll('.btn-investigate-complaint').forEach(b => {
@@ -1379,28 +1514,28 @@ function openInvestigationDrawer(container, c, teams) {
   drawer.style.display = 'block';
   drawer.innerHTML = `
     <div class="rw-drawer-backdrop" id="drawer-backdrop"></div>
-    <div class="rw-drawer-panel">
-      <div class="rw-drawer-header">
+    <div class="rw-drawer-panel" style="background: #ffffff; color: #0f172a; border-left: 1px solid #e2e8f0; box-shadow: -10px 0 25px -5px rgba(0,0,0,0.1);">
+      <div class="rw-drawer-header" style="border-bottom: 1px solid #e2e8f0;">
         <div>
           <span class="ss-ref-badge" style="font-size: 0.95rem;">${escapeHtml(c.referenceNumber)}</span>
-          <h2 style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 0.25rem;">${escapeHtml(c.subject)}</h2>
+          <h2 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-top: 0.25rem;">${escapeHtml(c.subject)}</h2>
         </div>
-        <button class="rw-btn-close" id="btn-close-drawer">✕</button>
+        <button class="rw-btn-close" id="btn-close-drawer" style="color: #64748b;">✕</button>
       </div>
 
       <div class="rw-drawer-body">
-        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; margin-bottom: 1.25rem;">
-          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">Original Customer Report</div>
-          <div style="font-size: 0.88rem; color: #fff; line-height: 1.5; white-space: pre-wrap;">${escapeHtml(c.description)}</div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; margin-bottom: 1.25rem;">
+          <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; margin-bottom: 0.25rem; font-weight: 600;">Original Customer Report</div>
+          <div style="font-size: 0.88rem; color: #0f172a; line-height: 1.5; white-space: pre-wrap;">${escapeHtml(c.description)}</div>
           
-          <div style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); display: flex; gap: 1rem; flex-wrap: wrap;">
+          <div style="margin-top: 0.75rem; font-size: 0.8rem; color: #475569; display: flex; gap: 1rem; flex-wrap: wrap;">
             <span>👤 ${escapeHtml(c.customerName)}</span>
             <span>✉️ ${escapeHtml(c.customerEmail || 'Confidential')}</span>
             <span>🏢 ${escapeHtml(c.storeName || 'N/A')}</span>
           </div>
 
           ${c.attachmentName ? `
-            <div style="margin-top: 0.75rem; font-size: 0.82rem; color: #38bdf8;">
+            <div style="margin-top: 0.75rem; font-size: 0.82rem; color: #2563eb;">
               📎 Customer Attached Evidence: <strong>${escapeHtml(c.attachmentName)}</strong>
             </div>
           ` : ''}

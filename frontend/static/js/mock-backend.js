@@ -789,8 +789,53 @@ class MockBackend {
       return this.db.regions;
     }
 
+    if (path === '/stores' && method === 'POST') {
+      const newStore = {
+        id: 'store-' + (body.storeNumber || Math.floor(Math.random() * 900 + 100)),
+        organizationId: body.organizationId || 'org-apex-01',
+        regionId: body.regionId || 'reg-pnw-01',
+        name: body.name,
+        storeNumber: parseInt(body.storeNumber) || Math.floor(Math.random() * 900 + 100),
+        operatingStatus: body.operatingStatus || 'OPERATIONAL',
+        metadata: body.metadata || {},
+        createdAt: new Date().toISOString()
+      };
+      this.db.stores = this.db.stores || [];
+      this.db.stores.push(newStore);
+      this.saveDatabase();
+      return newStore;
+    }
+
+    if (path.startsWith('/stores/') && (method === 'PUT' || method === 'PATCH')) {
+      const id = path.split('/')[2];
+      const store = this.db.stores.find(s => s.id === id);
+      if (!store) throw new Error('Store not found');
+      if (body.operatingStatus) store.operatingStatus = body.operatingStatus;
+      if (body.name) store.name = body.name;
+      if (body.storeNumber) store.storeNumber = parseInt(body.storeNumber) || store.storeNumber;
+      if (body.regionId) store.regionId = body.regionId;
+      if (body.metadata) store.metadata = { ...(store.metadata || {}), ...body.metadata };
+      this.saveDatabase();
+      return store;
+    }
+
+    if (path.startsWith('/stores/') && method === 'DELETE') {
+      const id = path.split('/')[2];
+      const store = this.db.stores.find(s => s.id === id);
+      if (store) {
+        store.operatingStatus = 'DECOMMISSIONED';
+        this.saveDatabase();
+      }
+      return { success: true, message: 'Store safely decommissioned.' };
+    }
+
     if (path === '/stores') {
-      return this.db.stores;
+      const q = (searchParams.get('q') || '').toLowerCase();
+      const status = searchParams.get('operatingStatus');
+      let result = this.db.stores || [];
+      if (status) result = result.filter(s => s.operatingStatus === status);
+      if (q) result = result.filter(s => s.name.toLowerCase().includes(q) || String(s.storeNumber).includes(q));
+      return result;
     }
 
     if (path.startsWith('/stores/')) {
@@ -1130,9 +1175,47 @@ class MockBackend {
       return { success: true, message: 'Answer recorded and feedback enriched.' };
     }
 
-    // 13. Users, Roles & Matrix
+    if (path === '/users' && method === 'POST') {
+      const cleanEmail = (body.email || '').toLowerCase().trim();
+      const existing = this.db.users.find(u => u.email.toLowerCase() === cleanEmail);
+      if (existing) throw new Error(`User with email '${cleanEmail}' already exists`);
+      const newUser = {
+        id: 'usr-' + Math.random().toString(36).substr(2, 9),
+        email: cleanEmail,
+        fullName: (body.fullName || '').trim(),
+        role: body.role || 'STORE_MANAGER',
+        storeId: body.storeId || null,
+        regionId: body.regionId || null,
+        teamId: body.teamId || null,
+        organizationId: body.organizationId || 'org-apex-01',
+        isActive: true,
+        createdAt: new Date().toISOString()
+      };
+      this.db.users = this.db.users || [];
+      this.db.users.push(newUser);
+      this.saveDatabase();
+      return newUser;
+    }
+
     if (path === '/users') {
-      return this.db.users;
+      const role = searchParams.get('role');
+      const storeId = searchParams.get('storeId');
+      const q = (searchParams.get('q') || '').toLowerCase();
+      let res = this.db.users || [];
+      if (role) res = res.filter(u => u.role === role);
+      if (storeId) res = res.filter(u => u.storeId === storeId);
+      if (q) res = res.filter(u => u.fullName.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+      return res;
+    }
+
+    if (path.startsWith('/users/') && method === 'DELETE') {
+      const id = path.split('/')[2];
+      const user = this.db.users.find(u => u.id === id);
+      if (user) {
+        user.isActive = false;
+        this.saveDatabase();
+      }
+      return { success: true, message: 'User account deactivated.' };
     }
 
     if (path.startsWith('/users/') && (method === 'PUT' || method === 'PATCH')) {

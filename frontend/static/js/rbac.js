@@ -6,50 +6,20 @@ export const ROLE_PRESETS = [
   {
     role: 'ORGANIZATION_ADMIN',
     email: 'orgadmin@apex.com',
-    title: 'Org Admin',
-    desc: 'Unrestricted enterprise control & config'
-  },
-  {
-    role: 'OPERATIONS_MANAGER',
-    email: 'opsmanager@apex.com',
-    title: 'Operations Manager',
-    desc: 'Cross-store operational triage & routing'
-  },
-  {
-    role: 'REGIONAL_MANAGER',
-    email: 'regmanager@apex.com',
-    title: 'Regional VP (PNW)',
-    desc: 'Regional stores oversight & escalation'
+    title: 'Organization Admin',
+    desc: 'Enterprise-wide operations, store management & complaint triage'
   },
   {
     role: 'STORE_MANAGER',
     email: 'storemanager@apex.com',
-    title: 'Store Lead (Store 104)',
-    desc: 'Store dispatch, human approvals & overrides'
-  },
-  {
-    role: 'MAINTENANCE_TEAM',
-    email: 'maintenance@apex.com',
-    title: 'Senior HVAC Tech',
-    desc: 'Work order execution & repair resolution'
-  },
-  {
-    role: 'ANALYST',
-    email: 'analyst@apex.com',
-    title: 'Operations Analyst',
-    desc: 'Incident analytics & feedback auditing'
-  },
-  {
-    role: 'VIEWER',
-    email: 'viewer@apex.com',
-    title: 'Store Auditor',
-    desc: 'Read-only visibility across metrics'
+    title: 'Store Manager',
+    desc: 'Store operations, complaint triage & staff resolution actions'
   },
   {
     role: 'CUSTOMER',
     email: 'customer@retailwave.com',
-    title: 'Sarah Jenkins (Customer)',
-    desc: 'Swift Service customer portal, complaint filing & tracking'
+    title: 'Customer',
+    desc: 'Submit complaints, track status & view resolution timeline'
   }
 ];
 
@@ -60,14 +30,13 @@ export const NAV_SECTIONS = [
 ];
 
 export const NAV_ITEMS = [
-  // 1. Core Operational Journey (R5)
+  // 1. Core Operational Journey
   {
     id: 'dashboard',
     section: 'core',
     label: 'Command Center',
     icon: '📊',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   },
   {
     id: 'customer-complaints',
@@ -75,9 +44,8 @@ export const NAV_ITEMS = [
     label: 'Customer Complaints',
     icon: '💬',
     highlight: true,
-    badgeText: 'PORTAL',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    badgeText: 'TRIAGE',
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   },
   {
     id: 'demo',
@@ -86,32 +54,28 @@ export const NAV_ITEMS = [
     icon: '🚀',
     highlight: true,
     badgeText: '15 STAGES',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   },
   {
     id: 'feedback',
     section: 'core',
     label: 'Feedback Ingestion',
     icon: '📥',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   },
   {
     id: 'issues',
     section: 'core',
     label: 'Issues & Incidents',
     icon: '⚠️',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   },
   {
     id: 'clusters',
     section: 'core',
     label: 'Semantic Clusters',
     icon: '🗂️',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   },
 
   // 2. Intervention & Verification
@@ -120,32 +84,28 @@ export const NAV_ITEMS = [
     section: 'intervention',
     label: 'Emerging Alerts',
     icon: '🔔',
-    minRole: 'MAINTENANCE_TEAM',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   },
   {
     id: 'actions',
     section: 'intervention',
     label: 'Actions & Approvals',
     icon: '🛠️',
-    minRole: 'MAINTENANCE_TEAM',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   },
   {
     id: 'outcomes',
     section: 'intervention',
     label: 'Outcome Intelligence',
     icon: '🎯',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   },
   {
     id: 'briefs',
     section: 'intervention',
     label: 'Executive Briefs',
     icon: '📋',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   },
 
   // 3. Enterprise Administration
@@ -154,56 +114,49 @@ export const NAV_ITEMS = [
     section: 'platform',
     label: 'Org & Stores',
     icon: '🏢',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   },
   {
     id: 'teams',
     section: 'platform',
     label: 'Teams & Skills',
     icon: '👥',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   },
   {
     id: 'users',
     section: 'platform',
     label: 'User Directory',
     icon: '👤',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN']
   },
   {
     id: 'ownership',
     section: 'platform',
     label: 'Ownership & Trace',
     icon: '🧭',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN']
   },
   {
     id: 'roles',
     section: 'platform',
     label: 'Role Permissions',
     icon: '🛡️',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN']
   },
   {
     id: 'audit',
     section: 'platform',
     label: 'Audit & Governance',
     icon: '📜',
-    minRole: 'ANALYST',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'ANALYST']
+    allowedRoles: ['ORGANIZATION_ADMIN']
   },
   {
     id: 'personal-home',
     section: 'platform',
-    label: 'Personal / Home (Ext)',
+    label: 'Personal / Home',
     icon: '🏠',
-    minRole: 'VIEWER',
-    allowedRoles: ['ORGANIZATION_ADMIN', 'OPERATIONS_MANAGER', 'REGIONAL_MANAGER', 'STORE_MANAGER', 'MAINTENANCE_TEAM', 'ANALYST', 'VIEWER']
+    allowedRoles: ['ORGANIZATION_ADMIN', 'STORE_MANAGER']
   }
 ];
 

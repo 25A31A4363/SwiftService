@@ -17,6 +17,7 @@ import { renderOutcomesView } from './outcomes-view.js';
 import { renderBriefsView } from './briefs-view.js';
 import { renderDemoView } from './demo-view.js';
 import { renderCustomerPortal, renderCustomerComplaintsView } from './customer-portal.js';
+import { renderOrgAdminDashboard } from './admin-portal.js';
 import { renderAuthPage } from './auth-page.js';
 
 // DOM Elements
@@ -43,9 +44,8 @@ import {
 } from './ui-utils.js';
 
 async function init() {
-  // Apply saved theme preference (default: dark)
-  const savedTheme = localStorage.getItem('r5_theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', savedTheme);
+  // Enforce consistent light mode across entire application
+  document.documentElement.setAttribute('data-theme', 'light');
 
   state.subscribe(render);
 
@@ -211,13 +211,8 @@ function render() {
 
         <div class="topbar-actions-group">
           <!-- Customer Portal Switcher -->
-          <button id="btn-topbar-customer-portal" class="btn btn-secondary btn-sm" title="Open RetailWave Customer Care Portal" style="font-weight: 600; color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); display: inline-flex; align-items: center; gap: 0.35rem;">
+          <button id="btn-topbar-customer-portal" class="btn btn-secondary btn-sm" title="Open RetailWave Customer Care Portal" style="font-weight: 600; color: #0284c7; border-color: rgba(2, 132, 199, 0.4); display: inline-flex; align-items: center; gap: 0.35rem;">
             🛍️ Customer Portal
-          </button>
-
-          <!-- Theme Toggle (Dark / Light Enterprise Mode) -->
-          <button id="btn-theme-toggle" class="btn btn-secondary btn-sm" title="Toggle Light/Dark Theme" aria-label="Toggle theme mode" style="padding: 0.35rem 0.65rem; font-size: 0.95rem;">
-            🌓
           </button>
 
           <!-- Notification Center -->
@@ -368,18 +363,6 @@ function attachGlobalEvents() {
     });
   }
 
-  // Theme Toggle (Dark / Light Mode)
-  const btnThemeToggle = document.getElementById('btn-theme-toggle');
-  if (btnThemeToggle) {
-    btnThemeToggle.addEventListener('click', () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('r5_theme', newTheme);
-      showToast(`Visual theme switched to ${newTheme} mode`, 'info');
-    });
-  }
-
   // Notification Center Dropdown
   const btnNotifications = document.getElementById('btn-notifications-toggle');
   const notifDropdown = document.getElementById('topbar-notifications-dropdown');
@@ -501,6 +484,11 @@ let dashPriorityFilter = 'ALL';
 let dashStatusFilter = 'ALL';
 
 async function renderDashboardView(container) {
+  if (state.user && state.user.role === 'ORGANIZATION_ADMIN') {
+    await renderOrgAdminDashboard(container);
+    return;
+  }
+
   // Skeleton Loading State
   container.innerHTML = `
     ${renderSkeletonCardsHtml(4)}

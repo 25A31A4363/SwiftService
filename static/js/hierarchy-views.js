@@ -570,13 +570,9 @@ export async function renderUsersView(container) {
             <input type="text" id="user-search-input" class="form-input" style="padding: 0.4rem 0.75rem; font-size: 0.82rem; width: 180px;" placeholder="Search name/email..." value="${userSearchQuery}" />
             <select id="user-role-filter" class="form-select" style="padding: 0.4rem 0.75rem; font-size: 0.82rem;">
               <option value="">All Roles</option>
-              <option value="ORGANIZATION_ADMIN" ${userFilterRole === 'ORGANIZATION_ADMIN' ? 'selected' : ''}>Org Admin</option>
-              <option value="OPERATIONS_MANAGER" ${userFilterRole === 'OPERATIONS_MANAGER' ? 'selected' : ''}>Operations Manager</option>
-              <option value="REGIONAL_MANAGER" ${userFilterRole === 'REGIONAL_MANAGER' ? 'selected' : ''}>Regional VP</option>
+              <option value="ORGANIZATION_ADMIN" ${userFilterRole === 'ORGANIZATION_ADMIN' ? 'selected' : ''}>Organization Admin</option>
               <option value="STORE_MANAGER" ${userFilterRole === 'STORE_MANAGER' ? 'selected' : ''}>Store Manager</option>
-              <option value="MAINTENANCE_TEAM" ${userFilterRole === 'MAINTENANCE_TEAM' ? 'selected' : ''}>Maintenance Tech</option>
-              <option value="ANALYST" ${userFilterRole === 'ANALYST' ? 'selected' : ''}>Analyst</option>
-              <option value="VIEWER" ${userFilterRole === 'VIEWER' ? 'selected' : ''}>Viewer</option>
+              <option value="CUSTOMER" ${userFilterRole === 'CUSTOMER' ? 'selected' : ''}>Customer</option>
             </select>
             <button id="btn-create-user" class="btn btn-primary btn-sm">+ Add User</button>
           </div>
@@ -1923,13 +1919,9 @@ async function openCreateUserModal(onSuccess) {
             <div class="form-group">
               <label class="form-label">System Role</label>
               <select id="cu-role" class="form-select" required>
+                <option value="STORE_MANAGER" selected>Store Manager</option>
                 <option value="ORGANIZATION_ADMIN">Organization Admin</option>
-                <option value="OPERATIONS_MANAGER">Operations Manager</option>
-                <option value="REGIONAL_MANAGER">Regional VP</option>
-                <option value="STORE_MANAGER">Store Manager</option>
-                <option value="MAINTENANCE_TEAM">Maintenance Team Tech</option>
-                <option value="ANALYST">Operations Analyst</option>
-                <option value="VIEWER">Auditor / Viewer</option>
+                <option value="CUSTOMER">Customer</option>
               </select>
             </div>
           </div>
@@ -2022,12 +2014,8 @@ async function openEditUserModal(userId, onSuccess) {
             <label class="form-label">System Role</label>
             <select id="eu-role" class="form-select" required>
               <option value="ORGANIZATION_ADMIN" ${user.role === 'ORGANIZATION_ADMIN' ? 'selected' : ''}>Organization Admin</option>
-              <option value="OPERATIONS_MANAGER" ${user.role === 'OPERATIONS_MANAGER' ? 'selected' : ''}>Operations Manager</option>
-              <option value="REGIONAL_MANAGER" ${user.role === 'REGIONAL_MANAGER' ? 'selected' : ''}>Regional VP</option>
               <option value="STORE_MANAGER" ${user.role === 'STORE_MANAGER' ? 'selected' : ''}>Store Manager</option>
-              <option value="MAINTENANCE_TEAM" ${user.role === 'MAINTENANCE_TEAM' ? 'selected' : ''}>Maintenance Team Tech</option>
-              <option value="ANALYST" ${user.role === 'ANALYST' ? 'selected' : ''}>Operations Analyst</option>
-              <option value="VIEWER" ${user.role === 'VIEWER' ? 'selected' : ''}>Auditor / Viewer</option>
+              <option value="CUSTOMER" ${user.role === 'CUSTOMER' ? 'selected' : ''}>Customer</option>
             </select>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
